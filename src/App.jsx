@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
-import Restaurants from "./components/Restaurants";
+import Restaurants from "./components/restaurants";
 
 function RestaurantsWrapper() {
   const navigate = useNavigate();

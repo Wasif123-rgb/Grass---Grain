@@ -1,9 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-    useEffect(() => {
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
     const cards = document.querySelectorAll(".card");
 
     const observer = new IntersectionObserver(
@@ -18,33 +21,65 @@ export default function Home() {
     );
 
     cards.forEach((card) => observer.observe(card));
-
   }, []);
+
   return (
     <>
+      {/* ================= NAVBAR ================= */}
       <nav className="navbar">
         <h2 className="logo">Grass & Grain</h2>
 
-        <div className="nav-links">
-          <Link to="/restaurants">Restaurants</Link>
-          <a href="#">Turf</a>
+        {/* Hamburger */}
+        <div
+          className="menu-icon"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          ☰
+        </div>
 
-          <Link to="/login">Login</Link>
+        <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+          <Link
+            to="/restaurants"
+            onClick={() => setMenuOpen(false)}
+          >
+            Restaurants
+          </Link>
+
+          <a
+            href="#"
+            onClick={() => setMenuOpen(false)}
+          >
+            Turf
+          </a>
+
+          <Link
+            to="/login"
+            onClick={() => setMenuOpen(false)}
+          >
+            Login
+          </Link>
         </div>
       </nav>
 
+      {/* ================= HERO ================= */}
       <section className="hero">
         <div className="hero-content">
           <h1>Grass & Grain</h1>
           <p>Where Matches Meet Meals.</p>
 
           <div className="hero-buttons">
-            <button className="primary-btn">Find Restaurants</button>
-            <button className="secondary-btn">Book Turf</button>
+            <button className="primary-btn">
+              Find Restaurants
+            </button>
+
+            <button className="secondary-btn">
+              Book Turf
+            </button>
           </div>
         </div>
       </section>
 
+      {/* ================= FEATURES ================= */}
       <section className="features">
         <div className="card">
           🍴
@@ -65,6 +100,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ================= FOOTER ================= */}
       <footer>
         © 2026 Grass & Grain
       </footer>
