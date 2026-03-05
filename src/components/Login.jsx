@@ -2,13 +2,15 @@ import { useState } from "react";
 import "./Login.css";
 
 export default function Login() {
-  const [mode, setMode] = useState("login"); // login | signup | forgot
+
+  const [mode, setMode] = useState("login");
 
   return (
     <div className="login-page">
+
       <div className="login-card">
 
-        <h2>Grass & Grain</h2>
+        <h2 className="brand">🌿 Grass & Grain</h2>
 
         {(mode === "login" || mode === "signup") && (
           <div className="tabs">
@@ -28,52 +30,75 @@ export default function Login() {
           </div>
         )}
 
+        {/* LOGIN */}
+        {mode === "login" && (
+          <>
+            <div className="input-group">
+              <input type="email" required />
+              <label>Email</label>
+            </div>
+
+            <div className="input-group">
+              <input type="password" required />
+              <label>Password</label>
+            </div>
+
+            <button>Login</button>
+
+            <p className="small" onClick={() => setMode("forgot")}>
+              Forgot password?
+            </p>
+          </>
+        )}
+
         {/* SIGNUP */}
         {mode === "signup" && (
           <>
-            <input placeholder="Full Name" />
-            <input placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <input type="password" placeholder="Confirm Password" />
+            <div className="input-group">
+              <input required />
+              <label>Full Name</label>
+            </div>
+
+            <div className="input-group">
+              <input type="email" required />
+              <label>Email</label>
+            </div>
+
+            <div className="input-group">
+              <input type="password" required />
+              <label>Password</label>
+            </div>
+
+            <div className="input-group">
+              <input type="password" required />
+              <label>Confirm Password</label>
+            </div>
 
             <button>Create Account</button>
 
             <p className="small" onClick={() => setMode("login")}>
-              Back to Login
+              Already have an account?
             </p>
           </>
         )}
 
-        {/* LOGIN */}
-        {mode === "login" && (
-          <>
-            <input placeholder="Email" />
-            <input type="password" placeholder="Password" />
-
-            <button>Login</button>
-
-            <div className="links">
-              <span onClick={() => setMode("forgot")}>Forgot password?</span>
-            </div>
-          </>
-        )}
-
-        {/* FORGOT PASSWORD */}
+        {/* FORGOT */}
         {mode === "forgot" && (
           <>
-            <input placeholder="Enter registered email" />
-            <input type="password" placeholder="New Password" />
-            <input type="password" placeholder="Confirm New Password" />
+            <h3>Reset Password</h3>
 
-            <button>Reset Password</button>
+            <div className="input-group">
+              <input type="email" required />
+              <label>Email</label>
+            </div>
+
+            <button>Send Reset Link</button>
 
             <p className="small" onClick={() => setMode("login")}>
               Back to Login
             </p>
           </>
         )}
-
-        <p className="demo">UI demo only — backend later</p>
 
       </div>
     </div>
