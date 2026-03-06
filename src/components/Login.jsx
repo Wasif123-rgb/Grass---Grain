@@ -5,30 +5,32 @@ export default function Login() {
 
   const [mode, setMode] = useState("login");
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  /* ================= LOGIN STATES ================= */
 
-  const [user, setUser] = useState(null);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  /* ================= SIGNUP STATES ================= */
+
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
   /* =====================================================
-     AUTO LOGIN AFTER REFRESH
+     AUTO REDIRECT IF ALREADY LOGGED IN
   ===================================================== */
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
 
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (token) {
+      window.location.href = "/restaurants";
     }
-
   }, []);
 
-
   /* =====================================================
-     LOGIN
+     LOGIN FUNCTION
   ===================================================== */
 
   const handleLogin = async () => {
@@ -40,7 +42,10 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPassword
+        })
       });
 
       const data = await res.json();
@@ -50,29 +55,27 @@ export default function Login() {
         return;
       }
 
-      // ✅ Store Token
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
-      setUser(data.user);
 
       alert("Login successful 🚀");
 
       window.location.href = "/restaurants";
 
     } catch (error) {
+      console.error(error);
       alert("Something went wrong");
     }
   };
 
 
   /* =====================================================
-     SIGNUP
+     SIGNUP FUNCTION
   ===================================================== */
 
   const handleSignup = async () => {
 
-    if (password !== confirmPassword) {
+    if (signupPassword !== signupConfirmPassword) {
       alert("Passwords do not match");
       return;
     }
@@ -85,9 +88,9 @@ export default function Login() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          name,
-          email,
-          password
+          name: signupName,
+          email: signupEmail,
+          password: signupPassword
         })
       });
 
@@ -98,81 +101,57 @@ export default function Login() {
         return;
       }
 
-      // ✅ Store Token After Signup
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
-      setUser(data.user);
 
       alert("Signup successful ✅");
 
       setMode("login");
 
     } catch (error) {
+      console.error(error);
       alert("Something went wrong");
     }
-  };
-
-
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
-
-  const handleLogout = () => {
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    setUser(null);
-
-    window.location.href = "/login";
   };
 
 
   return (
 
     <div className="login-page">
-
       <div className="login-card">
 
         <h2 className="brand">🌿 Grass & Grain</h2>
 
-        {user && (
-          <div>
-            <h3>Welcome {user.name}</h3>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        )}
+        {/* ================= TABS ================= */}
 
-        {(mode === "login" || mode === "signup") && (
-          <div className="tabs">
+        <div className="tabs">
 
-            <span
-              className={mode === "login" ? "active" : ""}
-              onClick={() => setMode("login")}
-            >
-              Login
-            </span>
+          <span
+            className={mode === "login" ? "active" : ""}
+            onClick={() => setMode("login")}
+          >
+            Login
+          </span>
 
-            <span
-              className={mode === "signup" ? "active" : ""}
-              onClick={() => setMode("signup")}
-            >
-              Sign Up
-            </span>
+          <span
+            className={mode === "signup" ? "active" : ""}
+            onClick={() => setMode("signup")}
+          >
+            Sign Up
+          </span>
 
-          </div>
-        )}
+        </div>
 
-        {/* ================= LOGIN ================= */}
+
+        {/* ================= LOGIN FORM ================= */}
 
         {mode === "login" && (
           <>
             <div className="input-group">
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
               />
               <label>Email</label>
             </div>
@@ -180,25 +159,27 @@ export default function Login() {
             <div className="input-group">
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
               />
               <label>Password</label>
             </div>
 
-            <button onClick={handleLogin}>Login</button>
-
+            <button onClick={handleLogin}>
+              Login
+            </button>
           </>
         )}
 
-        {/* ================= SIGNUP ================= */}
+
+        {/* ================= SIGNUP FORM ================= */}
 
         {mode === "signup" && (
           <>
             <div className="input-group">
               <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={signupName}
+                onChange={(e) => setSignupName(e.target.value)}
               />
               <label>Name</label>
             </div>
@@ -206,8 +187,8 @@ export default function Login() {
             <div className="input-group">
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={signupEmail}
+                onChange={(e) => setSignupEmail(e.target.value)}
               />
               <label>Email</label>
             </div>
@@ -215,8 +196,8 @@ export default function Login() {
             <div className="input-group">
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={signupPassword}
+                onChange={(e) => setSignupPassword(e.target.value)}
               />
               <label>Password</label>
             </div>
@@ -224,14 +205,15 @@ export default function Login() {
             <div className="input-group">
               <input
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={signupConfirmPassword}
+                onChange={(e) => setSignupConfirmPassword(e.target.value)}
               />
               <label>Confirm Password</label>
             </div>
 
-            <button onClick={handleSignup}>Create Account</button>
-
+            <button onClick={handleSignup}>
+              Create Account
+            </button>
           </>
         )}
 
