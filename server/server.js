@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
+const restaurantRoutes = require("./routes/restaurantRoutes"); // ✅ ADD THIS
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 /* ================= ROUTES ================= */
 
 app.use("/api", authRoutes);
+app.use("/api/restaurants", restaurantRoutes); // ✅ ADD THIS
 
 /* ================= DATABASE ================= */
 
