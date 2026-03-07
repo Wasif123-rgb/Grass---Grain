@@ -17,6 +17,9 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/restaurants", restaurantRoutes); // ✅ ADD THIS
 
+const orderRoutes = require("./routes/orderRoutes");
+app.use("/api/orders", orderRoutes);
+
 /* ================= DATABASE ================= */
 
 mongoose.connect("mongodb://127.0.0.1:27017/grassgrain")

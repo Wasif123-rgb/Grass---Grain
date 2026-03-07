@@ -1,26 +1,64 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import About from "./components/About";
-import Contact from "./components/Contact";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-// Temporary placeholders
-function Home() {
-  return <h2 style={{ textAlign: "center", marginTop: "50px" }}>Home Page</h2>;
-}
-function Login() {
-  return <h2 style={{ textAlign: "center", marginTop: "50px" }}>Login Page</h2>;
-}
+import Home from "./components/Home";
+import Login from "./components/Login";
+import Restaurants from "./components/Restaurants";
+import AdminDashboard from "./components/AdminDashboard";
+import OrderHistory from "./components/OrderHistory";
+import AdminOrders from "./components/AdminOrders";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+/* ================= WRAPPER ================= */
 
 export default function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Router>
+    <Routes>
+
+      {/* PUBLIC */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+
+      {/* CUSTOMER */}
+      <Route
+        path="/restaurants"
+        element={
+          <ProtectedRoute>
+            <Restaurants />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <OrderHistory />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ADMIN */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/orders"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminOrders />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Redirect */}
+      <Route path="*" element={<Navigate to="/" />} />
+
+    </Routes>
   );
 }
