@@ -3,11 +3,12 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Restaurants from "./components/restaurants";
-import OrderHistory from "./components/OrderHistory";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminOrders from "./components/AdminOrders";
 import RestaurantDashboard from "./components/RestaurantDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import About from "./components/About";
+import Contact from "./components/Contact";
 
 export default function App() {
 
@@ -19,6 +20,8 @@ export default function App() {
       {/* ================= PUBLIC ================= */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
 
       {/* ================= CUSTOMER ================= */}
 
@@ -27,15 +30,6 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Restaurants />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/orders"
-        element={
-          <ProtectedRoute>
-            <OrderHistory />
           </ProtectedRoute>
         }
       />
