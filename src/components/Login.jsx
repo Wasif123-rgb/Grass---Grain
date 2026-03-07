@@ -16,17 +16,34 @@ export default function Login() {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
+  const [signupRole, setSignupRole] = useState("customer"); // ✅ role added
 
   /* =====================================================
      AUTO REDIRECT IF ALREADY LOGGED IN
   ===================================================== */
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
 
-    if (token) {
-      window.location.href = "/restaurants";
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser && storedUser !== "undefined") {
+
+      try {
+
+        const user = JSON.parse(storedUser);
+
+        if (user?.role === "admin") {
+          window.location.href = "/admin";
+        } else if (user?.role === "customer") {
+          window.location.href = "/restaurants";
+        }
+
+      } catch (err) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      }
     }
+
   }, []);
 
   /* =====================================================
@@ -60,7 +77,12 @@ export default function Login() {
 
       alert("Login successful 🚀");
 
-      window.location.href = "/restaurants";
+      // ✅ Role Based Redirect
+      if (data.user.role === "admin") {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/restaurants";
+      }
 
     } catch (error) {
       console.error(error);
@@ -90,7 +112,8 @@ export default function Login() {
         body: JSON.stringify({
           name: signupName,
           email: signupEmail,
-          password: signupPassword
+          password: signupPassword,
+          role: signupRole // ✅ send role
         })
       });
 
@@ -104,9 +127,18 @@ export default function Login() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("Signup successful ✅");
+      alert("Signup successful 🚀");
 
-      setMode("login");
+      // Auto login after signup
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Redirect based on role
+      if (data.user.role === "admin") {
+      window.location.href = "/admin";
+    } else {
+     window.location.href = "/restaurants";
+  }
 
     } catch (error) {
       console.error(error);
@@ -209,6 +241,29 @@ export default function Login() {
                 onChange={(e) => setSignupConfirmPassword(e.target.value)}
               />
               <label>Confirm Password</label>
+            </div>
+
+            {/* ✅ ROLE SELECTION ADDED */}
+            <div className="role-select">
+              <label>
+                <input
+                  type="radio"
+                  value="customer"
+                  checked={signupRole === "customer"}
+                  onChange={() => setSignupRole("customer")}
+                />
+                Customer
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  value="admin"
+                  checked={signupRole === "admin"}
+                  onChange={() => setSignupRole("admin")}
+                />
+                Admin
+              </label>
             </div>
 
             <button onClick={handleSignup}>

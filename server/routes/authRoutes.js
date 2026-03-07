@@ -7,24 +7,20 @@ const User = require("../models/User");
 
 const SECRET = process.env.JWT_SECRET || "secret";
 
-/* ================================
-   TEST ROUTE
-================================ */
+/* ================= TEST ROUTE ================= */
 
 router.get("/test", (req, res) => {
   res.json({ message: "Backend working" });
 });
 
 
-/* ================================
-   SIGNUP ROUTE
-================================ */
+/* ================= SIGNUP ROUTE ================= */
 
 router.post("/signup", async (req, res) => {
 
   try {
 
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -58,16 +54,22 @@ router.post("/signup", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    /* ✅ ROLE ADDED HERE */
     const newUser = new User({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role: role || "customer"
     });
 
     await newUser.save();
 
     const token = jwt.sign(
-      { id: newUser._id, email: newUser.email },
+      {
+        id: newUser._id,
+        email: newUser.email,
+        role: newUser.role
+      },
       SECRET,
       { expiresIn: "7d" }
     );
@@ -78,7 +80,8 @@ router.post("/signup", async (req, res) => {
       user: {
         id: newUser._id,
         name: newUser.name,
-        email: newUser.email
+        email: newUser.email,
+        role: newUser.role
       }
     });
 
@@ -93,9 +96,7 @@ router.post("/signup", async (req, res) => {
 });
 
 
-/* ================================
-   LOGIN ROUTE
-================================ */
+/* ================= LOGIN ROUTE ================= */
 
 router.post("/login", async (req, res) => {
 
@@ -126,7 +127,11 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role
+      },
       SECRET,
       { expiresIn: "7d" }
     );
@@ -137,7 +142,8 @@ router.post("/login", async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
 
@@ -152,9 +158,7 @@ router.post("/login", async (req, res) => {
 });
 
 
-/* ================================
-   AUTH MIDDLEWARE
-================================ */
+/* ================= AUTH MIDDLEWARE ================= */
 
 const authMiddleware = (req, res, next) => {
 
@@ -187,9 +191,7 @@ const authMiddleware = (req, res, next) => {
 };
 
 
-/* ================================
-   PROTECTED ROUTE
-================================ */
+/* ================= PROTECTED ROUTE ================= */
 
 router.get("/protected", authMiddleware, (req, res) => {
 
