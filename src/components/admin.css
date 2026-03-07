@@ -1,0 +1,88 @@
+/* ================= ADMIN DASHBOARD STYLING ================= */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2d6a4f;
+  color: white;
+  padding: 1rem 2rem;
+}
+
+.navbar button {
+  background-color: #95d5b2;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.navbar button:hover {
+  background-color: #74c69d;
+}
+
+.admin-container {
+  padding: 2rem;
+  flex: 1;
+}
+
+h2 {
+  color: #1b4332;
+}
+
+.food-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.food-table th, .food-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.food-table th {
+  background-color: #40916c;
+  color: white;
+}
+
+.food-table td input {
+  width: 100%;
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.food-table button {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.food-table button:hover {
+  background-color: #d62828;
+}
+
+.food-table .add-btn {
+  background-color: #2a9d8f;
+}
+
+.food-table .add-btn:hover {
+  background-color: #21867a;
+}
