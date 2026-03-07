@@ -1,164 +1,149 @@
-import React, { useState, useMemo } from "react";
-import Restaurant from "./restaurant";
-import "./restaurants.css";
+import { useState, useEffect } from "react";
+import "../components/restaurants.css";
 
-export default function Restaurants({ onBack }) {
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-  const [cartCount, setCartCount] = useState(0);
+export default function Restaurants() {
 
-  const restaurantData = useMemo(() => [
-    {
-      name: "Sultan’s Dine",
-      location: "Dhanmondi, Dhaka",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/4/45/Kacchi_Biryani.jpg",
-      type: "Kacchi & Bengali Cuisine",
-      foods: [
-        {
-          name: "Kacchi Biryani",
-          price: 320,
-          rating: 4.7,
-          reviews: 1200,
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/4/45/Kacchi_Biryani.jpg",
-        },
-        {
-          name: "Borhani",
-          price: 60,
-          rating: 4.5,
-          reviews: 430,
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/5/56/Borhani.jpg",
-        },
-        {
-          name: "Chicken Roast",
-          price: 180,
-          rating: 4.6,
-          reviews: 620,
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/3/3f/Chicken_roast.jpg",
-        },
-      ],
-    },
-    {
-      name: "Madchef",
-      location: "Banani, Dhaka",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/0/0b/RedDot_Burger.jpg",
-      type: "Fast Food & Burgers",
-      foods: [
-        {
-          name: "Beef Burger",
-          price: 280,
-          rating: 4.4,
-          reviews: 980,
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/0/0b/RedDot_Burger.jpg",
-        },
-        {
-          name: "Fries",
-          price: 120,
-          rating: 4.2,
-          reviews: 540,
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/8/83/French_Fries.JPG",
-        },
-        {
-          name: "Fried Chicken",
-          price: 240,
-          rating: 4.5,
-          reviews: 760,
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/f/fc/Fried_Chicken.JPG",
-        },
-      ],
-    },
-  ], []);
+  const [restaurants, setRestaurants] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [cart, setCart] = useState([]);
 
-  const handleAddToCart = () => {
-    setCartCount(prev => prev + 1);
+  const token = localStorage.getItem("token");
+
+  /* ================= FETCH RESTAURANTS ================= */
+
+  useEffect(() => {
+
+    fetch("http://localhost:5000/api/restaurants")
+      .then(res => res.json())
+      .then(data => setRestaurants(data));
+
+  }, []);
+
+  /* ================= ADD TO CART ================= */
+
+  const addToCart = (food) => {
+
+    setCart(prev => {
+
+      const exists = prev.find(item => item.name === food.name);
+
+      if (exists) {
+        return prev.map(item =>
+          item.name === food.name
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+
+      return [...prev, { ...food, quantity: 1 }];
+    });
+
   };
 
-  /* ================= MENU VIEW ================= */
-  if (selectedRestaurant) {
+  /* ================= CHECKOUT ================= */
+
+  const checkout = async () => {
+
+    const totalAmount = cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    await fetch("http://localhost:5000/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        items: cart,
+        totalAmount
+      })
+    });
+
+    alert("Order Placed ✅");
+
+    setCart([]);
+
+  };
+
+  if (selected) {
+
     return (
-      <div className="page">
-        <nav className="navbar">
-          <div className="logo">Grass & Green</div>
-          <div className="cart">🛒 {cartCount}</div>
-        </nav>
+      <div className="restaurants-page">
 
-        <div className="restaurants-container">
-          <button
-            className="back-btn"
-            onClick={() => setSelectedRestaurant(null)}
-          >
-            ← Back to Restaurants
-          </button>
+        <button onClick={() => setSelected(null)}>
+          ← Back
+        </button>
 
-          <h1 className="title">{selectedRestaurant.name}</h1>
+        <h2>{selected.name}</h2>
 
-          <div className="menu-grid">
-            {selectedRestaurant.foods.map((food, index) => (
-              <div key={index} className="menu-card">
-                <img src={food.image} alt={food.name} />
-                <div className="menu-content">
-                  <h3>{food.name}</h3>
-                  <p className="price">৳ {food.price}</p>
-                  <p className="rating">
-                    ⭐ {food.rating} ({food.reviews} reviews)
-                  </p>
-                  <button
-                    className="add-btn"
-                    onClick={handleAddToCart}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="menu-grid">
+
+          {selected.foods.map((food, index) => (
+
+            <div key={index} className="menu-card">
+
+              <h3>{food.name}</h3>
+              <p>৳ {food.price}</p>
+
+              <button onClick={() => addToCart(food)}>
+                Add
+              </button>
+
+            </div>
+
+          ))}
+
         </div>
 
-        <footer className="footer">
-          © 2026 Grass & Green • All Rights Reserved
-        </footer>
+        <div className="cart-box">
+
+          <h3>Cart</h3>
+
+          {cart.map((item, i) => (
+            <div key={i}>
+              {item.name} x {item.quantity}
+            </div>
+          ))}
+
+          {cart.length > 0 && (
+            <button onClick={checkout}>
+              Checkout
+            </button>
+          )}
+
+        </div>
+
       </div>
     );
+
   }
 
-  /* ================= RESTAURANT LIST VIEW ================= */
   return (
-    <div className="page">
-      <nav className="navbar">
-        <div className="logo">Grass & Green</div>
-      </nav>
+    <div className="restaurants-page">
 
-      <div className="restaurants-container">
-        
-        {/* Back Button for Parent Project */}
-        {onBack && (
-          <button className="back-btn" onClick={onBack}>
-            ← Back
-          </button>
-        )}
+      <h1>Restaurants</h1>
 
-        <h1 className="title">Explore Restaurants</h1>
+      <div className="restaurant-list">
 
-        <div className="restaurant-grid">
-          {restaurantData.map((rest, index) => (
-            <Restaurant
-              key={index}
-              {...rest}
-              onClick={() => setSelectedRestaurant(rest)}
-            />
-          ))}
-        </div>
+        {restaurants.map(rest => (
+
+          <div
+            key={rest._id}
+            className="restaurant-card"
+            onClick={() => setSelected(rest)}
+          >
+
+            <h3>{rest.name}</h3>
+            <p>{rest.location}</p>
+
+          </div>
+
+        ))}
+
       </div>
 
-      <footer className="footer">
-        © 2026 Grass & Green
-      </footer>
     </div>
   );
 }
