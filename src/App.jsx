@@ -2,23 +2,26 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./components/Home";
 import Login from "./components/Login";
-import Restaurants from "./components/Restaurants";
-import AdminDashboard from "./components/AdminDashboard";
+import Restaurants from "./components/restaurants";
 import OrderHistory from "./components/OrderHistory";
+import AdminDashboard from "./components/AdminDashboard";
 import AdminOrders from "./components/AdminOrders";
+import RestaurantDashboard from "./components/RestaurantDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-/* ================= WRAPPER ================= */
-
 export default function App() {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <Routes>
 
-      {/* PUBLIC */}
+      {/* ================= PUBLIC ================= */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
 
-      {/* CUSTOMER */}
+      {/* ================= CUSTOMER ================= */}
+
       <Route
         path="/restaurants"
         element={
@@ -37,7 +40,8 @@ export default function App() {
         }
       />
 
-      {/* ADMIN */}
+      {/* ================= ADMIN ================= */}
+
       <Route
         path="/admin"
         element={
@@ -56,7 +60,19 @@ export default function App() {
         }
       />
 
-      {/* Redirect */}
+      {/* ================= RESTAURANT DASHBOARD ================= */}
+
+      <Route
+        path="/restaurant/:id"
+        element={
+          <ProtectedRoute>
+            <RestaurantDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ================= REDIRECT ================= */}
+
       <Route path="*" element={<Navigate to="/" />} />
 
     </Routes>
