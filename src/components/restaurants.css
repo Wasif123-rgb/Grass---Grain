@@ -1,0 +1,95 @@
+/* ================= CUSTOMER RESTAURANTS PAGE ================= */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fefae0;
+}
+
+.restaurants-page {
+  padding: 2rem;
+}
+
+h1 {
+  text-align: center;
+  color: #1b4332;
+}
+
+.restaurant-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.restaurant-card {
+  background-color: #52b788;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.restaurant-card:hover {
+  transform: scale(1.05);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.menu-card {
+  background-color: #95d5b2;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.menu-card h3 {
+  margin: 0.5rem 0;
+  color: #1b4332;
+}
+
+.menu-card button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background-color: #2d6a4f;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.menu-card button:hover {
+  background-color: #1b4332;
+}
+
+.cart-box {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #d8f3dc;
+  border-radius: 8px;
+}
+
+.cart-box h3 {
+  margin-top: 0;
+  color: #1b4332;
+}
+
+.cart-box button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background-color: #2a9d8f;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.cart-box button:hover {
+  background-color: #21867a;
+}
