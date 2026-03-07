@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import "./Home.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Home() {
 
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const cards = document.querySelectorAll(".card");
@@ -81,7 +83,10 @@ export default function Home() {
           <p>Where Matches Meet Meals.</p>
 
           <div className="hero-buttons">
-            <button className="primary-btn">
+            <button
+              className="primary-btn"
+              onClick={() => navigate("/restaurants")}
+            >
               Find Restaurants
             </button>
 
