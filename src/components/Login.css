@@ -9,6 +9,7 @@
     url("https://images.unsplash.com/photo-1498837167922-ddd27525d352");
   background-size: cover;
   background-position: center;
+  position: relative;
 }
 
 .login-card {
@@ -97,13 +98,18 @@ button:hover {
   background: #1b5e20;
 }
 
+/* ================= BACK BUTTON ================= */
 .back-btn {
+  position: fixed;       /* fixed to viewport */
+  top: 20px;             /* distance from top of page */
+  left: 20px;            /* distance from left of page */
   background: transparent;
   border: none;
   color: #9be15d;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 15px;
+  z-index: 1000;         /* above everything */
 }
 
 .back-btn:hover {
