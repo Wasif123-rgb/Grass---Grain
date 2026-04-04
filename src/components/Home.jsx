@@ -68,12 +68,7 @@ export default function Home() {
             Turf
           </Link>
 
-          <Link
-            to="/login"
-            onClick={() => setMenuOpen(false)}
-          >
-            Login
-          </Link>
+          
           <Link
             to="/about"
             onClick={() => setMenuOpen(false)}
