@@ -7,6 +7,7 @@ const restaurantRoutes = require("./routes/restaurantRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const turfRoutes = require("./routes/turfRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/turfs", turfRoutes);
+app.use("/api/contact", contactRoutes);
 
 // DATABASE
 mongoose.connect("mongodb://127.0.0.1:27017/grassgrain")
