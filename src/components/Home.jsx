@@ -3,10 +3,20 @@ import "./Home.css";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Home() {
-
   const [menuOpen, setMenuOpen] = useState(false);
-
   const navigate = useNavigate();
+
+  // ================= FUNCTION TO HANDLE BOOK TURF =================
+  const navigateToTurf = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // redirect to login and remember where user wanted to go
+      navigate("/login", { state: { redirectTo: "/book-turf" } });
+    } else {
+      navigate("/book-turf");
+    }
+  };
 
   useEffect(() => {
     const cards = document.querySelectorAll(".card");
@@ -47,12 +57,16 @@ export default function Home() {
             Restaurants
           </Link>
 
-          <a
-            href="#"
-            onClick={() => setMenuOpen(false)}
+          <Link
+            to="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigateToTurf();
+              setMenuOpen(false);
+            }}
           >
             Turf
-          </a>
+          </Link>
 
           <Link
             to="/login"
@@ -90,7 +104,10 @@ export default function Home() {
               Find Restaurants
             </button>
 
-            <button className="secondary-btn">
+            <button
+              className="secondary-btn"
+              onClick={navigateToTurf}
+            >
               Book Turf
             </button>
           </div>

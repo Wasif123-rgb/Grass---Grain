@@ -1,0 +1,32 @@
+.turf-admin-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.add-turf-form input {
+  margin: 5px;
+  padding: 5px;
+}
+
+.add-turf-form button {
+  margin: 5px;
+  padding: 5px 10px;
+}
+
+.turf-list li {
+  margin: 5px 0;
+}
+.logout-btn {
+  float: right;
+  padding: 5px 10px;
+  margin: 10px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.logout-btn:hover {
+  background-color: #e60000;
+}

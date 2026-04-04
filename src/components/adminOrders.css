@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+.admin-orders-page {
+  font-family: 'Roboto', sans-serif;
+  padding: 20px 40px;
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.admin-orders-page h1 {
+  color: #264653;
+  margin-bottom: 20px;
+}
+
+.empty-text {
+  font-size: 18px;
+  color: #666;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.orders-grid {
+  display: grid;
+  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: transform 0.2s;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-id {
+  font-weight: 500;
+  color: #264653;
+}
+
+.order-status {
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.order-status.Pending { background: #e9c46a; }
+.order-status.Preparing { background: #2a9d8f; }
+.order-status.Delivered { background: #264653; }
+
+.order-info p {
+  margin: 3px 0;
+  font-size: 14px;
+}
+
+.order-items {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.order-items .item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.order-actions button {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: white;
+  transition: 0.3s;
+}
+
+.order-actions button:first-child {
+  background: #2a9d8f;
+}
+
+.order-actions button:first-child:hover {
+  background: #21867a;
+}
+
+.order-actions button:last-child {
+  background: #e63946;
+}
+
+.order-actions button:last-child:hover {
+  background: #d62828;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .admin-orders-page {
+    padding: 15px 20px;
+  }
+  .order-actions {
+    flex-direction: column;
+  }
+  .order-actions button {
+    width: 100%;
+  }
+}

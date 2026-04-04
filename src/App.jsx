@@ -4,18 +4,18 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Restaurants from "./components/restaurants";
 import AdminDashboard from "./components/AdminDashboard";
+import TurfBooking from "./components/TurfBooking";
+import TurfAdmin from "./components/TurfAdmin";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./components/About";
 import Contact from "./components/Contact";
+import AdminOrders from "./components/AdminOrders";
+import MyOrders from "./components/MyOrders";
 
 export default function App() {
-
-  const user = JSON.parse(localStorage.getItem("user"));
-
   return (
     <Routes>
-
       {/* ================= PUBLIC ================= */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
@@ -26,8 +26,24 @@ export default function App() {
       <Route
         path="/restaurants"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["customer"]}>
             <Restaurants />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/book-turf"
+        element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <TurfBooking />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-orders"
+        element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <MyOrders />
           </ProtectedRoute>
         }
       />
@@ -36,15 +52,30 @@ export default function App() {
       <Route
         path="/admin"
         element={
-          <ProtectedRoute adminOnly={true}>
+          <ProtectedRoute allowedRoles={["admin"]}>
             <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/turf-admin"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <TurfAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/orders"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminOrders />
           </ProtectedRoute>
         }
       />
 
       {/* ================= REDIRECT ================= */}
       <Route path="*" element={<Navigate to="/" />} />
-
     </Routes>
   );
 }

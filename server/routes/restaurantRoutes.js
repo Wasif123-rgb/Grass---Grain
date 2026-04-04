@@ -5,7 +5,7 @@ const Restaurant = require("../models/Restaurant");
 
 const SECRET = "secret";
 
-/* ================= AUTH ================= */
+// ================= AUTH MIDDLEWARE =================
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ message: "No token" });
@@ -20,24 +20,25 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-/* ================= GET ALL RESTAURANTS (for customers) ================= */
+// ================= GET ALL RESTAURANTS (for customers) =================
 router.get("/", async (req, res) => {
   try {
     const restaurants = await Restaurant.find({});
-    res.json(restaurants); // returns foods array too
+    res.json(restaurants);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-/* ================= GET ADMIN RESTAURANT ================= */
+// ================= GET ADMIN RESTAURANT =================
 router.get("/admin/:adminId", authMiddleware, async (req, res) => {
   let restaurant = await Restaurant.findOne({ adminId: req.params.adminId });
 
   if (!restaurant) {
     restaurant = new Restaurant({
       name: "My Restaurant",
+      location: "",
       adminId: req.params.adminId,
       foods: []
     });
@@ -47,7 +48,25 @@ router.get("/admin/:adminId", authMiddleware, async (req, res) => {
   res.json([restaurant]);
 });
 
-/* ================= ADD FOOD ================= */
+// ================= UPDATE RESTAURANT INFO =================
+router.put("/:restaurantId", authMiddleware, async (req, res) => {
+  try {
+    const { name, location } = req.body;
+    const restaurant = await Restaurant.findById(req.params.restaurantId);
+    if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
+
+    if (name) restaurant.name = name;
+    if (location) restaurant.location = location;
+
+    await restaurant.save();
+    res.json(restaurant);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ================= ADD FOOD =================
 router.post("/:restaurantId/foods", authMiddleware, async (req, res) => {
   const restaurant = await Restaurant.findById(req.params.restaurantId);
   if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
@@ -61,7 +80,7 @@ router.post("/:restaurantId/foods", authMiddleware, async (req, res) => {
   res.json({ foods: restaurant.foods });
 });
 
-/* ================= DELETE FOOD ================= */
+// ================= DELETE FOOD =================
 router.delete("/:restaurantId/foods/:index", authMiddleware, async (req, res) => {
   const restaurant = await Restaurant.findById(req.params.restaurantId);
   if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
