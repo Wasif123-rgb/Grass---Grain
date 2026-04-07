@@ -7,16 +7,15 @@ export default function Home() {
   const navigate = useNavigate();
 
   // ================= FUNCTION TO HANDLE BOOK TURF =================
-  const navigateToTurf = () => {
-    const token = localStorage.getItem("token");
+ const navigateToTurf = () => {
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      // redirect to login and remember where user wanted to go
-      navigate("/login", { state: { redirectTo: "/book-turf" } });
-    } else {
-      navigate("/book-turf");
-    }
-  };
+  if (!token || token === "null" || token === "undefined" || token.length < 10) {
+    navigate("/login", { state: { redirectTo: "/book-turf" } });
+  } else {
+    navigate("/book-turf");
+  }
+};
 
   useEffect(() => {
     const cards = document.querySelectorAll(".card");

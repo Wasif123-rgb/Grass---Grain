@@ -21,15 +21,18 @@ export default function Login() {
 
   /* ================= AUTO REDIRECT ================= */
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
-    if (token && storedUser && storedUser !== "undefined") {
+      if (!token || !storedUser || storedUser === "undefined" || token === "null" || token === "undefined" || token.length < 10) {
+        return; // invalid → stay on login page
+      }
+
       try {
         const user = JSON.parse(storedUser);
 
         if (user?.role === "admin") {
-          // default admin redirect
           navigate("/admin");
         } else if (user?.role === "customer") {
           navigate("/restaurants");
@@ -38,7 +41,13 @@ export default function Login() {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
       }
-    }
+    };
+
+    checkAuth();
+
+    const interval = setInterval(checkAuth, 500);
+
+    return () => clearInterval(interval);
   }, [navigate]);
 
   /* ================= LOGIN FUNCTION ================= */
@@ -61,7 +70,6 @@ export default function Login() {
 
       alert("Login successful 🚀");
 
-      // ================= NAVIGATION FIX =================
       if (data.user.role === "admin") {
         if (redirectTo === "/book-turf") {
           navigate("/turf-admin");
@@ -107,7 +115,6 @@ export default function Login() {
 
       alert("Signup successful 🚀");
 
-      // ================= NAVIGATION FIX =================
       if (data.user.role === "admin") {
         if (redirectTo === "/book-turf") {
           navigate("/turf-admin");
