@@ -3,10 +3,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Restaurants from "./components/restaurants";
+import RestaurantDetail from "./components/RestaurantDetail";
 import AdminDashboard from "./components/AdminDashboard";
 import TurfBooking from "./components/TurfBooking";
 import TurfAdmin from "./components/TurfAdmin";
-
 import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -16,18 +16,26 @@ import MyOrders from "./components/MyOrders";
 export default function App() {
   return (
     <Routes>
-      {/* ================= PUBLIC ================= */}
+      {/* PUBLIC */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
 
-      {/* ================= CUSTOMER ================= */}
+      {/* CUSTOMER */}
       <Route
         path="/restaurants"
         element={
           <ProtectedRoute allowedRoles={["customer"]}>
             <Restaurants />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/restaurants/:id"
+        element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <RestaurantDetail />
           </ProtectedRoute>
         }
       />
@@ -48,7 +56,7 @@ export default function App() {
         }
       />
 
-      {/* ================= ADMIN ================= */}
+      {/* ADMIN */}
       <Route
         path="/admin"
         element={
@@ -74,7 +82,7 @@ export default function App() {
         }
       />
 
-      {/* ================= REDIRECT ================= */}
+      {/* REDIRECT */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
