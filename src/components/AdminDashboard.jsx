@@ -14,8 +14,7 @@ export default function AdminDashboard() {
   const [restLocation, setRestLocation] = useState("");
   const [foodName, setFoodName] = useState("");
   const [foodPrice, setFoodPrice] = useState("");
-
-  // New state for orders
+  const [foodStock, setFoodStock] = useState("");
   const [restaurantOrders, setRestaurantOrders] = useState([]);
 
   useEffect(() => {
@@ -39,16 +38,14 @@ export default function AdminDashboard() {
     fetchRestaurant();
   }, [user.id, token]);
 
-  // Fetch orders for this restaurant
   useEffect(() => {
     if (!restaurant) return;
-
     fetch("http://localhost:5000/api/orders", {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then(res => res.json())
-      .then(data => setRestaurantOrders(data))
-      .catch(err => console.error(err));
+      .then((res) => res.json())
+      .then((data) => setRestaurantOrders(data))
+      .catch((err) => console.error(err));
   }, [restaurant, token]);
 
   const updateRestaurant = async () => {
@@ -75,7 +72,8 @@ export default function AdminDashboard() {
   };
 
   const addFood = async () => {
-    if (!foodName || !foodPrice) return alert("Enter food name and price");
+    if (!foodName || !foodPrice || !foodStock)
+      return alert("Enter food name, price, and stock");
     try {
       const res = await fetch(
         `http://localhost:5000/api/restaurants/${restaurant._id}/foods`,
@@ -85,13 +83,18 @@ export default function AdminDashboard() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ name: foodName, price: Number(foodPrice) }),
+          body: JSON.stringify({
+            name: foodName,
+            price: Number(foodPrice),
+            stock: Number(foodStock),
+          }),
         }
       );
       const data = await res.json();
       setFoods(data.foods);
       setFoodName("");
       setFoodPrice("");
+      setFoodStock("");
     } catch (err) {
       console.error(err);
       alert("Failed to add food");
@@ -122,40 +125,61 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-
-      {/* 🔥 NAVBAR */}
+      {/* NAVBAR */}
       <nav className="admin-navbar">
         <div className="nav-left">
-          <h1>{restaurant.name || "My Restaurant"}</h1>
-          <span>{restaurant.location || "Location not set"}</span>
+          <h1>{restaurant.name}</h1>
+          <span>{restaurant.location}</span>
         </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div className="nav-right">
+          <AdminOrdersBadge token={token} />
           <button className="logout-btn" onClick={handleLogout}>
             ⏻ Logout
           </button>
-          <AdminOrdersBadge token={token} />
         </div>
       </nav>
 
       {/* PANELS */}
       <div className="dashboard-panels">
-        <div className="panel">
+        <div className="panel glass-panel">
           <h2>Restaurant Info</h2>
-          <input value={restName} onChange={(e) => setRestName(e.target.value)} placeholder="Restaurant Name" />
-          <input value={restLocation} onChange={(e) => setRestLocation(e.target.value)} placeholder="Location" />
+          <input
+            value={restName}
+            onChange={(e) => setRestName(e.target.value)}
+            placeholder="Restaurant Name"
+          />
+          <input
+            value={restLocation}
+            onChange={(e) => setRestLocation(e.target.value)}
+            placeholder="Location"
+          />
           <button onClick={updateRestaurant}>Update Info</button>
         </div>
 
-        <div className="panel">
+        <div className="panel glass-panel">
           <h2>Add Food Item</h2>
-          <input value={foodName} onChange={(e) => setFoodName(e.target.value)} placeholder="Food Name" />
-          <input type="number" value={foodPrice} onChange={(e) => setFoodPrice(e.target.value)} placeholder="Price" />
+          <input
+            value={foodName}
+            onChange={(e) => setFoodName(e.target.value)}
+            placeholder="Food Name"
+          />
+          <input
+            type="number"
+            value={foodPrice}
+            onChange={(e) => setFoodPrice(e.target.value)}
+            placeholder="Price"
+          />
+          <input
+            type="number"
+            value={foodStock}
+            onChange={(e) => setFoodStock(e.target.value)}
+            placeholder="Stock"
+          />
           <button onClick={addFood}>Add Food</button>
         </div>
       </div>
 
-      {/* TABLE */}
+      {/* FOOD TABLE */}
       <div className="food-table-container">
         <h2>Food Items</h2>
         {foods.length === 0 ? (
@@ -166,6 +190,7 @@ export default function AdminDashboard() {
               <tr>
                 <th>🍽 Name</th>
                 <th>💰 Price (৳)</th>
+                <th>📦 Stock</th>
                 <th>⚙ Action</th>
               </tr>
             </thead>
@@ -174,8 +199,12 @@ export default function AdminDashboard() {
                 <tr key={index}>
                   <td>{food.name}</td>
                   <td>{food.price}</td>
+                  <td>{food.stock}</td>
                   <td>
-                    <button className="delete-btn" onClick={() => deleteFood(index)}>
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteFood(index)}
+                    >
                       Delete
                     </button>
                   </td>
@@ -186,7 +215,7 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* ================= ADMIN ORDERS ================= */}
+      {/* ORDERS TABLE */}
       <div className="orders-table-container">
         <h2>Customer Orders</h2>
         {restaurantOrders.length === 0 ? (
@@ -202,12 +231,14 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {restaurantOrders.map(order => (
+              {restaurantOrders.map((order) => (
                 <tr key={order._id}>
                   <td>{order.userName}</td>
                   <td>
                     {order.items.map((i, idx) => (
-                      <div key={idx}>{i.name} x {i.quantity}</div>
+                      <div key={idx}>
+                        {i.name} x {i.quantity}
+                      </div>
                     ))}
                   </td>
                   <td>{order.totalAmount}</td>
@@ -218,7 +249,6 @@ export default function AdminDashboard() {
           </table>
         )}
       </div>
-
     </div>
   );
 }
