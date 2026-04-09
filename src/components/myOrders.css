@@ -1,34 +1,156 @@
+/* ===== GLOBAL ===== */
 .my-orders-page {
-  padding: 20px;
-  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  padding: 50px 20px;
+  background: linear-gradient(135deg, #f6f9fc, #eef2f7);
+  font-family: "Poppins", sans-serif;
 }
 
+/* ===== TITLE ===== */
+.my-orders-page h1 {
+  text-align: center;
+  font-size: 34px;
+  margin-bottom: 40px;
+  font-weight: 700;
+  color: #1f2d3d;
+  letter-spacing: 0.5px;
+}
+
+/* ===== GRID ===== */
 .orders-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 30px;
 }
 
+/* ===== CARD ===== */
 .order-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 rgba(255, 255, 255, 0.2);
+
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Glow hover */
+.order-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.12),
+    0 0 20px rgba(46, 204, 113, 0.2);
+}
+
+/* Gradient top line */
+.order-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(90deg, #27ae60, #2ecc71, #00c9a7);
+}
+
+/* ===== HEADER ===== */
 .order-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: #7b8a99;
   font-weight: 500;
-  margin-bottom: 10px;
 }
 
-.order-status.Pending { color: orange; }
-.order-status.Preparing { color: #2a9d8f; }
-.order-status.Delivered { color: green; }
+/* ===== STATUS BADGE ===== */
+.order-status {
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(6px);
+}
 
-.order-items .item {
+/* Status colors */
+.order-status.pending {
+  background: rgba(255, 193, 7, 0.15);
+  color: #b58100;
+}
+
+.order-status.completed {
+  background: rgba(40, 167, 69, 0.15);
+  color: #1e7e34;
+}
+
+.order-status.cancelled {
+  background: rgba(220, 53, 69, 0.15);
+  color: #a71d2a;
+}
+
+/* ===== TEXT ===== */
+.order-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #2f3e4d;
+  font-weight: 500;
+}
+
+/* Highlight values */
+.order-card strong {
+  color: #111;
+  font-weight: 600;
+}
+
+/* ===== ITEMS ===== */
+.order-items {
+  margin-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding-top: 12px;
+}
+
+/* Each item */
+.item {
   display: flex;
   justify-content: space-between;
-  margin: 5px 0;
+  margin: 8px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+/* subtle hover effect */
+.item:hover {
+  color: #000;
+  transform: translateX(2px);
+  transition: 0.2s ease;
+}
+
+/* ===== EMPTY STATE ===== */
+.my-orders-page p {
+  text-align: center;
+  font-size: 16px;
+  color: #8a97a6;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 500px) {
+  .my-orders-page {
+    padding: 30px 15px;
+  }
+
+  .order-card {
+    padding: 18px;
+  }
+
+  .my-orders-page h1 {
+    font-size: 26px;
+  }
 }
