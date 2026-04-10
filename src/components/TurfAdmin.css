@@ -1,9 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-body {
-  margin: 0;
+.page {
   font-family: "Inter", sans-serif;
-  background: #f7f8fc;
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  min-height: 100vh;
   color: #111827;
 }
 
@@ -12,106 +10,114 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 14px 24px;
 
-  padding: 14px 22px;
-  background: white;
+  background: rgba(255,255,255,0.85);
   border-bottom: 1px solid #e5e7eb;
 }
 
-.navbar h2 {
-  font-size: 16px;
+/* TITLE */
+.title {
+  font-size: 18px;
   font-weight: 600;
 }
 
-/* LOGOUT ALWAYS GREEN (NO CHANGE EVER) */
-.nav-right button {
-  background: #22c55e;
-  color: white;
-
-  border: none;
-  padding: 7px 12px;
-  font-size: 12px;
-
-  border-radius: 8px;
-
-  cursor: pointer;
-
-  transition: none;
-}
-
-.nav-right button:hover,
-.nav-right button:focus,
-.nav-right button:active {
-  background: #22c55e;
-  color: white;
+/* RIGHT SIDE NAV */
+.navRight {
+  display: flex;
+  align-items: center;
 }
 
 /* GRID */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1.6fr;
-  gap: 18px;
-  padding: 24px;
+  gap: 22px;
+  padding: 28px;
 }
 
 /* PANEL */
 .panel {
   background: white;
-  border: 1px solid #e5e7eb;
-
   border-radius: 16px;
-  padding: 18px;
-
-  box-shadow: none;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
 }
 
-/* INPUTS (NO BLUE, NO CHANGE) */
-input, select {
+/* INPUT */
+.input, .select {
   width: 100%;
-  padding: 10px 12px;
-
-  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
   border: 1px solid #e5e7eb;
-
-  outline: none;
-
-  background: white;
-
-  transition: none;
-}
-
-/* NO FOCUS EFFECT */
-input:focus, select:focus {
-  border: 1px solid #e5e7eb;
-  box-shadow: none;
-}
-
-/* BUTTONS (NO CHANGE EVER) */
-button {
-  padding: 10px 14px;
-  background: #111827;
-  border: none;
-  border-radius: 12px;
-
-  color: white;
-  font-weight: 500;
-
-  cursor: pointer;
-  transition: none;
-}
-
-button:hover,
-button:focus,
-button:active {
-  background: #111827;
-  transform: none;
 }
 
 /* SLOT ROW */
-.slot-row {
+.slotRow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 8px;
+  gap: 12px;
+  align-items: center;
+}
+
+/* ================= BUTTONS ================= */
+
+/* PRIMARY BUTTON */
+.primary {
+  background: #111827;
+  color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: none; /* no animation */
+}
+
+/* KEEP SAME COLOR ON HOVER */
+.primary:hover {
+  background: #111827;
+  color: white;
+}
+
+/* DANGER BUTTON */
+.danger {
+  background: white;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition: none;
+}
+
+.danger:hover {
+  background: white;
+  color: #dc2626;
+}
+
+/* ================= LOGOUT ================= */
+
+/* TOP RIGHT + COLORED */
+.logoutBtn {
+  background: #ef4444;
+  color: white;
+
+  padding: 6px 12px;
+  font-size: 12px;
+
+  border: none;
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+/* NO COLOR CHANGE ON HOVER */
+.logoutBtn:hover {
+  background: #ef4444;
+  color: white;
 }
 
 /* TABLE */
@@ -121,38 +127,13 @@ table {
   border-collapse: collapse;
 }
 
-th {
-  text-align: left;
-  font-size: 12px;
+th, td {
   padding: 12px;
-  background: #f3f4f6;
-}
-
-td {
-  padding: 12px;
-  border-top: 1px solid #f1f1f1;
+  border-top: 1px solid #eee;
   font-size: 13px;
 }
 
-tr:hover {
-  background: transparent;
-}
-
-/* DELETE */
-td button {
-  background: #fee2e2;
-  color: #dc2626;
-  padding: 6px 10px;
-  font-size: 12px;
-  border-radius: 8px;
-}
-
-td button:hover {
-  background: #fee2e2;
-}
-
-/* EMPTY */
 .empty {
-  color: #6b7280;
-  font-size: 13px;
+  text-align: center;
+  color: gray;
 }

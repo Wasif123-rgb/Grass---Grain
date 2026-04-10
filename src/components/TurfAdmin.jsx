@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./turfAdmin.css";
+import "./TurfAdmin.css";
 
 export default function TurfAdmin() {
   const navigate = useNavigate();
@@ -25,8 +25,13 @@ export default function TurfAdmin() {
     const data = await res.json();
     setTurfs(data);
 
-    if (!selectedTurf && data.length > 0) {
-      setSelectedTurf(data[0]);
+    if (data.length > 0) {
+      if (selectedTurf) {
+        const updated = data.find((t) => t._id === selectedTurf._id);
+        setSelectedTurf(updated);
+      } else {
+        setSelectedTurf(data[0]);
+      }
     }
   };
 
@@ -49,16 +54,13 @@ export default function TurfAdmin() {
       body: JSON.stringify({ name, location, price }),
     });
 
-    setName("");
-    setLocation("");
-    setPrice("");
     fetchTurfs();
   };
 
   const addSlot = async () => {
     if (!selectedTurf) return;
 
-    await fetch(
+    const res = await fetch(
       `http://localhost:5000/api/turfs/${selectedTurf._id}/slots`,
       {
         method: "POST",
@@ -70,13 +72,16 @@ export default function TurfAdmin() {
       }
     );
 
+    const updated = await res.json();
+    setSelectedTurf(updated);
+    fetchTurfs();
+
     setStartTime("");
     setEndTime("");
-    fetchTurfs();
   };
 
   const deleteSlot = async (index) => {
-    await fetch(
+    const res = await fetch(
       `http://localhost:5000/api/turfs/${selectedTurf._id}/slots/${index}`,
       {
         method: "DELETE",
@@ -84,6 +89,8 @@ export default function TurfAdmin() {
       }
     );
 
+    const updated = await res.json();
+    setSelectedTurf(updated);
     fetchTurfs();
   };
 
@@ -92,49 +99,54 @@ export default function TurfAdmin() {
 
       {/* NAVBAR */}
       <div className="navbar">
-        <h2>🏟 Turf Admin</h2>
+        <h2 className="title">🏟 Turf Admin</h2>
 
-        <div className="nav-right">
-          <button onClick={logout}>Logout</button>
+        <div className="navRight">
+          <button className="logoutBtn" onClick={logout}>
+            Logout
+          </button>
         </div>
       </div>
 
-      {/* GRID */}
       <div className="grid">
 
-        {/* LEFT */}
+        {/* LEFT PANEL */}
         <div className="panel">
           <h3>Create Turf</h3>
 
           <input
+            className="input"
             placeholder="Turf Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
           <input
+            className="input"
             placeholder="Location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
 
           <input
+            className="input"
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
 
-          <button onClick={createTurf}>Create Turf</button>
+          <button className="primary" onClick={createTurf}>
+            Create Turf
+          </button>
 
           <hr />
 
           <h3>Select Turf</h3>
 
           <select
+            className="select"
             onChange={(e) =>
-              setSelectedTurf(
-                turfs.find((t) => t._id === e.target.value)
-              )
+              setSelectedTurf(turfs.find((t) => t._id === e.target.value))
             }
           >
             {turfs.map((t) => (
@@ -145,13 +157,18 @@ export default function TurfAdmin() {
           </select>
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT PANEL */}
         <div className="panel">
 
           <h3>Add Slots</h3>
 
-          <div className="slot-row">
-            <select value={day} onChange={(e) => setDay(e.target.value)}>
+          <div className="slotRow">
+
+            <select
+              className="select"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+            >
               <option>Monday</option>
               <option>Tuesday</option>
               <option>Wednesday</option>
@@ -162,23 +179,30 @@ export default function TurfAdmin() {
             </select>
 
             <input
+              className="input"
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
             />
 
             <input
+              className="input"
               type="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
             />
 
-            <button onClick={addSlot}>Add</button>
+            <button className="primary" onClick={addSlot}>
+              Add
+            </button>
+
           </div>
 
           <h3 style={{ marginTop: "20px" }}>Slots</h3>
 
-          {!selectedTurf || selectedTurf.slots.length === 0 ? (
+          {!selectedTurf ||
+          !selectedTurf.slots ||
+          selectedTurf.slots.length === 0 ? (
             <p className="empty">No slots added</p>
           ) : (
             <table>
@@ -196,7 +220,7 @@ export default function TurfAdmin() {
                     <td>{s.day}</td>
                     <td>{s.startTime} - {s.endTime}</td>
                     <td>
-                      <button onClick={() => deleteSlot(i)}>
+                      <button className="danger" onClick={() => deleteSlot(i)}>
                         Delete
                       </button>
                     </td>
