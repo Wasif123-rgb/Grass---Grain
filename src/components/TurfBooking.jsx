@@ -9,14 +9,14 @@ export default function TurfBooking() {
 
   const fetchTurfs = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/turfs", {
+      const res = await fetch("http://localhost:5000/api/turfs/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Fetch failed");
+
       const data = await res.json();
       setTurfs(data);
     } catch (err) {
-      console.error("FETCH ERROR:", err);
+      console.log(err);
     }
   };
 
@@ -24,39 +24,90 @@ export default function TurfBooking() {
     fetchTurfs();
   }, []);
 
-  const handleBook = async (id) => {
+  const handleBook = async (turfId, index) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/turfs/book/${id}`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Booking failed");
-      alert("Turf booked successfully");
-      fetchTurfs();
-    } catch (err) {
-      console.error("BOOK ERROR:", err);
-      alert("Failed to book turf");
+      const res = await fetch(
+        `http://localhost:5000/api/turfs/book/${turfId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ slotIndex: index }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message);
+      } else {
+        alert("Booked successfully!");
+        fetchTurfs();
+      }
+    } catch {
+      alert("Booking failed");
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
     navigate("/login");
   };
 
   return (
-    <div className="turf-booking-page">
-      <button className="logout-btn" onClick={handleLogout}>Logout</button>
-      <h2>Available Turfs</h2>
-      <ul className="turf-list">
-        {turfs.map((turf) => (
-          <li key={turf._id}>
-            {turf.name} - {turf.location} - ${turf.price}{" "}
-            <button onClick={() => handleBook(turf._id)}>Book</button>
-          </li>
-        ))}
-      </ul>
+    <div className="bookingPage">
+
+      <div className="topBar">
+        <h2>Available Turfs</h2>
+        <button className="logoutBtn" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
+      <div className="grid">
+
+        {turfs.length === 0 ? (
+          <p>No turfs found</p>
+        ) : (
+          turfs.map((turf) => (
+            <div key={turf._id} className="card">
+
+              <h3>{turf.name}</h3>
+              <p>{turf.location}</p>
+              <p>₹ {turf.price}</p>
+
+              <div className="slots">
+                {turf.slots?.map((s, i) => (
+                  <div key={i} className="slotBox">
+
+                    <span>
+                      {s.day} | {s.startTime} - {s.endTime}
+                    </span>
+
+                    {s.isBooked ? (
+                      <button disabled className="bookedBtn">
+                        Booked
+                      </button>
+                    ) : (
+                      <button
+                        className="bookBtn"
+                        onClick={() => handleBook(turf._id, i)}
+                      >
+                        Book
+                      </button>
+                    )}
+
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          ))
+        )}
+
+      </div>
     </div>
   );
 }

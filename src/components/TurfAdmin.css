@@ -11,18 +11,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 14px 24px;
-
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.9);
   border-bottom: 1px solid #e5e7eb;
 }
 
-/* TITLE */
 .title {
   font-size: 18px;
   font-weight: 600;
 }
 
-/* RIGHT SIDE NAV */
 .navRight {
   display: flex;
   align-items: center;
@@ -44,16 +41,21 @@
   border: 1px solid #e5e7eb;
 }
 
-/* INPUT */
-.input, .select {
+/* INPUT + SELECT */
+.input,
+.select {
   width: 100%;
-  padding: 10px;
+  padding: 10px 12px;
   margin-bottom: 10px;
+
   border-radius: 10px;
   border: 1px solid #e5e7eb;
+
+  outline: none;
+  background: white;
 }
 
-/* SLOT ROW */
+/* SLOT ROW (FIXED SPACING) */
 .slotRow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
@@ -63,7 +65,7 @@
 
 /* ================= BUTTONS ================= */
 
-/* PRIMARY BUTTON */
+/* PRIMARY */
 .primary {
   background: #111827;
   color: white;
@@ -71,41 +73,35 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-
-  transition: none; /* no animation */
 }
 
-/* KEEP SAME COLOR ON HOVER */
+/* NO HOVER CHANGE */
 .primary:hover {
   background: #111827;
   color: white;
 }
 
-/* DANGER BUTTON */
+/* DANGER */
 .danger {
-  background: white;
+  background: #fff;
   color: #dc2626;
   border: 1px solid #fecaca;
   padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
-
-  transition: none;
 }
 
 .danger:hover {
-  background: white;
+  background: #fff;
   color: #dc2626;
 }
 
-/* ================= LOGOUT ================= */
-
-/* TOP RIGHT + COLORED */
+/* LOGOUT */
 .logoutBtn {
   background: #ef4444;
   color: white;
 
-  padding: 6px 12px;
+  padding: 6px 10px;
   font-size: 12px;
 
   border: none;
@@ -114,7 +110,6 @@
   cursor: pointer;
 }
 
-/* NO COLOR CHANGE ON HOVER */
 .logoutBtn:hover {
   background: #ef4444;
   color: white;
@@ -136,4 +131,5 @@ th, td {
 .empty {
   text-align: center;
   color: gray;
+  font-size: 13px;
 }

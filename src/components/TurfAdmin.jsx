@@ -7,7 +7,6 @@ export default function TurfAdmin() {
   const token = localStorage.getItem("token");
 
   const [turfs, setTurfs] = useState([]);
-  const [selectedTurf, setSelectedTurf] = useState(null);
 
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -17,21 +16,17 @@ export default function TurfAdmin() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
+  // FETCH TURF
   const fetchTurfs = async () => {
-    const res = await fetch("http://localhost:5000/api/turfs", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await fetch("http://localhost:5000/api/turfs", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const data = await res.json();
-    setTurfs(data);
-
-    if (data.length > 0) {
-      if (selectedTurf) {
-        const updated = data.find((t) => t._id === selectedTurf._id);
-        setSelectedTurf(updated);
-      } else {
-        setSelectedTurf(data[0]);
-      }
+      const data = await res.json();
+      setTurfs(data);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -39,11 +34,15 @@ export default function TurfAdmin() {
     fetchTurfs();
   }, []);
 
+  const turf = turfs?.[0] || null;
+
+  // LOGOUT
   const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
+  // CREATE TURF
   const createTurf = async () => {
     await fetch("http://localhost:5000/api/turfs", {
       method: "POST",
@@ -54,43 +53,44 @@ export default function TurfAdmin() {
       body: JSON.stringify({ name, location, price }),
     });
 
+    setName("");
+    setLocation("");
+    setPrice("");
+
     fetchTurfs();
   };
 
+  // ADD SLOT
   const addSlot = async () => {
-    if (!selectedTurf) return;
+    if (!turf) return;
 
-    const res = await fetch(
-      `http://localhost:5000/api/turfs/${selectedTurf._id}/slots`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ day, startTime, endTime }),
-      }
-    );
-
-    const updated = await res.json();
-    setSelectedTurf(updated);
-    fetchTurfs();
+    await fetch(`http://localhost:5000/api/turfs/${turf._id}/slots`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ day, startTime, endTime }),
+    });
 
     setStartTime("");
     setEndTime("");
+
+    fetchTurfs();
   };
 
+  // DELETE SLOT
   const deleteSlot = async (index) => {
-    const res = await fetch(
-      `http://localhost:5000/api/turfs/${selectedTurf._id}/slots/${index}`,
+    if (!turf) return;
+
+    await fetch(
+      `http://localhost:5000/api/turfs/${turf._id}/slots/${index}`,
       {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       }
     );
 
-    const updated = await res.json();
-    setSelectedTurf(updated);
     fetchTurfs();
   };
 
@@ -110,7 +110,7 @@ export default function TurfAdmin() {
 
       <div className="grid">
 
-        {/* LEFT PANEL */}
+        {/* LEFT */}
         <div className="panel">
           <h3>Create Turf</h3>
 
@@ -138,26 +138,9 @@ export default function TurfAdmin() {
           <button className="primary" onClick={createTurf}>
             Create Turf
           </button>
-
-          <hr />
-
-          <h3>Select Turf</h3>
-
-          <select
-            className="select"
-            onChange={(e) =>
-              setSelectedTurf(turfs.find((t) => t._id === e.target.value))
-            }
-          >
-            {turfs.map((t) => (
-              <option key={t._id} value={t._id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
         </div>
 
-        {/* RIGHT PANEL */}
+        {/* RIGHT */}
         <div className="panel">
 
           <h3>Add Slots</h3>
@@ -200,9 +183,7 @@ export default function TurfAdmin() {
 
           <h3 style={{ marginTop: "20px" }}>Slots</h3>
 
-          {!selectedTurf ||
-          !selectedTurf.slots ||
-          selectedTurf.slots.length === 0 ? (
+          {!turf?.slots?.length ? (
             <p className="empty">No slots added</p>
           ) : (
             <table>
@@ -215,7 +196,7 @@ export default function TurfAdmin() {
               </thead>
 
               <tbody>
-                {selectedTurf.slots.map((s, i) => (
+                {turf.slots.map((s, i) => (
                   <tr key={i}>
                     <td>{s.day}</td>
                     <td>{s.startTime} - {s.endTime}</td>
