@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./RestaurantDetail.css";
+import "./restaurantDetail.css";
 
 export default function RestaurantDetail() {
   const { id } = useParams();
@@ -12,22 +12,15 @@ export default function RestaurantDetail() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Fetch restaurant & stock
-  const fetchRestaurant = async () => {
-    try {
-      const res = await fetch(`http://localhost:5000/api/restaurants/${id}`);
-      const data = await res.json();
-      setRestaurant(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+  // ================= FETCH RESTAURANT =================
   useEffect(() => {
-    fetchRestaurant();
+    fetch(`http://localhost:5000/api/restaurants/${id}`)
+      .then(res => res.json())
+      .then(data => setRestaurant(data))
+      .catch(err => console.error(err));
   }, [id]);
 
-  // Fetch reviews
+  // ================= FETCH REVIEWS =================
   useEffect(() => {
     if (!restaurant) return;
     fetch(`http://localhost:5000/api/reviews/${id}`)
@@ -36,15 +29,17 @@ export default function RestaurantDetail() {
       .catch(err => console.error(err));
   }, [restaurant, id]);
 
+  // ================= LOGOUT =================
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
   };
 
-  // Add to cart (cannot exceed stock)
+  // ================= ADD TO CART =================
   const addToCart = (food) => {
     const inCart = cart.find(i => i.name === food.name)?.quantity || 0;
-    if (inCart >= food.stock) return; // Cannot add more than stock
+    if (food.stock <= inCart) return alert("Stock limit reached!");
+    
     setCart(prev => {
       const exists = prev.find(i => i.name === food.name);
       if (exists) return prev.map(i => i.name === food.name ? { ...i, quantity: i.quantity + 1 } : i);
@@ -52,41 +47,78 @@ export default function RestaurantDetail() {
     });
   };
 
+  // ================= REMOVE FROM CART =================
   const removeFromCart = (name) => {
     setCart(prev => prev.filter(i => i.name !== name));
   };
 
-  // Checkout: reduce stock on server
+  // ================= CHECKOUT =================
   const checkout = async () => {
     if (!cart.length) return alert("Cart empty");
+
+    // Check stock
+    for (const item of cart) {
+      const original = restaurant.foods.find(f => f.name === item.name);
+      if (item.quantity > original.stock) {
+        return alert(`Cannot order ${item.name}. Only ${original.stock} left.`);
+      }
+    }
+
+    const totalAmount = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    const orderItems = cart.map(item => ({
+      foodId: item._id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity
+    }));
+
     try {
       const res = await fetch("http://localhost:5000/api/orders", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ items: cart, restaurantId: id }),
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({
+          restaurantId: restaurant._id,
+          items: orderItems,
+          totalAmount
+        })
       });
+
       const data = await res.json();
 
       if (res.ok) {
         alert("Order placed ✅");
         setCart([]);
-        await fetchRestaurant(); // Refresh stock from server
-      } else {
-        alert("Order failed ❌ " + data.message);
-      }
+        // Reduce stock locally
+        setRestaurant(prev => ({
+          ...prev,
+          foods: prev.foods.map(f => {
+            const ordered = cart.find(i => i.name === f.name);
+            return ordered ? { ...f, stock: f.stock - ordered.quantity } : f;
+          })
+        }));
+      } else alert("Order failed ❌ " + data.message);
+
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
     }
   };
 
+  // ================= SUBMIT REVIEW =================
   const submitReview = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/reviews", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ restaurantId: id, rating, comment }),
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ restaurantId: id, rating, comment })
       });
+
       const data = await res.json();
       if (res.ok) {
         alert("Review added ✅");
@@ -95,9 +127,11 @@ export default function RestaurantDetail() {
         const updated = await fetch(`http://localhost:5000/api/reviews/${id}`);
         setReviews(await updated.json());
       } else alert(data.message);
+
     } catch (err) { console.error(err); }
   };
 
+  // ================= STAR RENDER =================
   const renderStars = (rating) => {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5 ? 1 : 0;
@@ -109,7 +143,6 @@ export default function RestaurantDetail() {
 
   return (
     <div className="restaurant-detail-page">
-      {/* Header */}
       <div className="restaurant-header">
         <div className="header-left">
           <h2>{restaurant.name}</h2>
@@ -123,20 +156,19 @@ export default function RestaurantDetail() {
 
       {/* Menu */}
       <div className="menu-grid">
-        {restaurant.foods?.map((food, i) => {
-          const inCart = cart.find(i => i.name === food.name)?.quantity || 0;
-          const availableStock = food.stock - inCart;
-          return (
-            <div key={i} className="menu-card">
-              <h3>{food.name}</h3>
-              <p>Price: ৳ {food.price}</p>
-              <p>Stock: {availableStock}</p>
-              <button onClick={() => addToCart(food)} disabled={availableStock <= 0}>
-                {availableStock <= 0 ? "Out of Stock" : "Add"}
-              </button>
-            </div>
-          );
-        })}
+        {restaurant.foods?.map((food, i) => (
+          <div key={i} className="menu-card">
+            <h3>{food.name}</h3>
+            <p>৳ {food.price}</p>
+            <p>Stock: {food.stock}</p>
+            <button 
+              disabled={food.stock === 0} 
+              onClick={() => addToCart(food)}
+            >
+              {food.stock === 0 ? "Out of Stock" : "Add"}
+            </button>
+          </div>
+        ))}
       </div>
 
       {/* Cart */}
@@ -151,7 +183,13 @@ export default function RestaurantDetail() {
               </div>
             ))}
             <p>Total: ৳ {cart.reduce((s, i) => s + i.price * i.quantity, 0)}</p>
-            <button className="checkout-btn" onClick={checkout}>Checkout</button>
+            <button 
+              className="checkout-btn" 
+              disabled={cart.some(i => restaurant.foods.find(f => f.name === i.name).stock === 0)}
+              onClick={checkout}
+            >
+              Checkout
+            </button>
           </>
         )}
       </div>
@@ -162,10 +200,21 @@ export default function RestaurantDetail() {
         <div className="review-form">
           <div className="interactive-stars">
             {[1,2,3,4,5].map(n => (
-              <span key={n} className={`star ${rating >= n ? "full" : "empty"}`} onClick={() => setRating(n)}>★</span>
+              <span 
+                key={n} 
+                className={rating >= n ? "star active" : "star"}
+                onClick={() => setRating(n)}
+              >
+                ★
+              </span>
             ))}
           </div>
-          <input type="text" placeholder="Write your review..." value={comment} onChange={e => setComment(e.target.value)} />
+          <input 
+            type="text" 
+            placeholder="Write your review..." 
+            value={comment} 
+            onChange={e => setComment(e.target.value)} 
+          />
           <button className="submit-review-btn" onClick={submitReview}>Submit</button>
         </div>
 

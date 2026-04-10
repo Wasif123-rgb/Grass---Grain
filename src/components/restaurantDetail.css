@@ -7,12 +7,12 @@ body {
   color: #264653;
 }
 
-/* Header */
+/* ================= HEADER ================= */
 .restaurant-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .header-left h2 {
@@ -21,7 +21,7 @@ body {
 }
 
 .header-left p {
-  margin: 4px 0 0 0;
+  margin: 3px 0 0 0;
   font-size: 14px;
   opacity: 0.8;
 }
@@ -31,11 +31,11 @@ body {
   gap: 10px;
 }
 
-/* Buttons */
+/* ================= BUTTONS ================= */
 .small-btn {
-  padding: 6px 12px;
+  padding: 5px 10px;
   font-size: 14px;
-  border-radius: 6px;
+  border-radius: 5px;
   border: none;
   cursor: pointer;
   background: #2a9d8f;
@@ -47,15 +47,15 @@ body {
   background: #e63946;
 }
 
-.small-btn.logout-btn:hover {
-  background: #d62828;
-}
-
 .small-btn:hover {
   background: #21867a;
 }
 
-/* Menu Grid */
+.small-btn.logout-btn:hover {
+  background: #d62828;
+}
+
+/* ================= MENU GRID ================= */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -70,7 +70,15 @@ body {
   box-shadow: 0 6px 15px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+}
+
+.menu-card h3 {
+  margin: 0 0 10px 0;
+}
+
+.menu-card p {
+  margin: 0 0 5px 0;
 }
 
 .menu-card button {
@@ -84,23 +92,28 @@ body {
 }
 
 .menu-card button:disabled {
-  background: #aaa;
+  background: #ccc;
   cursor: not-allowed;
 }
 
-/* Cart */
+.menu-card button:hover:enabled {
+  background: #21867a;
+}
+
+/* ================= CART ================= */
 .cart-box {
   background: white;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
 .cart-item {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .cart-item button {
@@ -110,6 +123,11 @@ body {
   background: #e63946;
   color: white;
   cursor: pointer;
+  font-size: 12px;
+}
+
+.cart-item button:hover {
+  background: #d62828;
 }
 
 .checkout-btn {
@@ -120,25 +138,47 @@ body {
   border: none;
   background: #2a9d8f;
   color: white;
+  font-weight: 500;
   cursor: pointer;
 }
 
-/* Reviews */
+.checkout-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.checkout-btn:hover:enabled {
+  background: #21867a;
+}
+
+/* ================= EMPTY TEXT ================= */
+.empty-text {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ================= REVIEWS ================= */
 .review-box {
-  margin-top: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
 }
 
 .review-form {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
+  align-items: center;
 }
 
 .review-form input {
-  flex: 1;
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  flex: 1;
 }
 
 .submit-review-btn {
@@ -150,12 +190,16 @@ body {
   cursor: pointer;
 }
 
+.submit-review-btn:hover {
+  background: #21867a;
+}
+
 .review-list .review-card {
   border-top: 1px solid #eee;
   padding: 12px 0;
 }
 
-.review-card:first-child {
+.review-list .review-card:first-child {
   border-top: none;
 }
 
@@ -163,14 +207,30 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4px;
 }
 
 .stars-display {
   color: #f4c150;
 }
+.interactive-stars {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
 
-.empty-text {
-  color: #888;
-  text-align: center;
-  padding: 20px 0;
+.star {
+  font-size: 24px;
+  color: #ccc;
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+}
+
+.star.active {
+  color: #f4c150;
+}
+
+.star:hover {
+  transform: scale(1.2);
 }
