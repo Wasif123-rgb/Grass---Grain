@@ -20,45 +20,46 @@ const auth = (req, res, next) => {
 
 /* GET TURFS */
 router.get("/", auth, async (req, res) => {
-  const turfs = await Turf.find();
+  const turfs = await Turf.find({ adminId: req.user.id });
   res.json(turfs);
 });
 
 /* CREATE TURF */
 router.post("/", auth, async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-
-  const { name, location, price, slots } = req.body;
+  const { name, location, price } = req.body;
 
   const turf = await Turf.create({
     name,
     location,
     price,
-    slots,
     adminId: req.user.id,
   });
 
   res.json(turf);
 });
 
-/* BOOK TURF */
-router.post("/book/:id", auth, async (req, res) => {
-  const { date, slot } = req.body;
+/* ADD SLOT */
+router.post("/:id/slots", auth, async (req, res) => {
+  const { day, startTime, endTime } = req.body;
 
   const turf = await Turf.findById(req.params.id);
   if (!turf) return res.status(404).json({ message: "Not found" });
 
-  turf.bookings.push({
-    customerId: req.user.id,
-    date,
-    slot,
-  });
-
+  turf.slots.push({ day, startTime, endTime });
   await turf.save();
 
-  res.json({ message: "Booked successfully" });
+  res.json(turf);
+});
+
+/* DELETE SLOT */
+router.delete("/:id/slots/:index", auth, async (req, res) => {
+  const turf = await Turf.findById(req.params.id);
+  if (!turf) return res.status(404).json({ message: "Not found" });
+
+  turf.slots.splice(req.params.index, 1);
+  await turf.save();
+
+  res.json(turf);
 });
 
 module.exports = router;

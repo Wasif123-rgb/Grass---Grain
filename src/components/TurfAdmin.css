@@ -1,72 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 body {
   margin: 0;
-  font-family: Inter, Arial;
-  background: #f6f7fb;
-  color: #111;
+  font-family: "Inter", sans-serif;
+  background: #f7f8fc;
+  color: #111827;
 }
 
-/* TOP BAR */
-.topbar {
+/* NAVBAR */
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 25px;
+
+  padding: 14px 22px;
   background: white;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.logo {
+.navbar h2 {
+  font-size: 16px;
   font-weight: 600;
 }
 
-.logout {
-  width: 40px;
-  height: 30px;
+/* LOGOUT ALWAYS GREEN (NO CHANGE EVER) */
+.nav-right button {
+  background: #22c55e;
+  color: white;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: none;
+  padding: 7px 12px;
+  font-size: 12px;
 
-  background: transparent;
-  border: 1px solid #e5e5e5;
+  border-radius: 8px;
 
-  font-size: 11px;
-  padding: 0;
-
-  border-radius: 6px;
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: none;
 }
 
-.logout:hover {
-  background: #111;
+.nav-right button:hover,
+.nav-right button:focus,
+.nav-right button:active {
+  background: #22c55e;
   color: white;
 }
 
-/* LAYOUT */
-.container {
+/* GRID */
+.grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 18px;
+  padding: 24px;
 }
 
 /* PANEL */
 .panel {
   background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+  padding: 18px;
+
+  box-shadow: none;
 }
 
-/* INPUTS */
+/* INPUTS (NO BLUE, NO CHANGE) */
 input, select {
   width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+  padding: 10px 12px;
+
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+
+  outline: none;
+
+  background: white;
+
+  transition: none;
+}
+
+/* NO FOCUS EFFECT */
+input:focus, select:focus {
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+}
+
+/* BUTTONS (NO CHANGE EVER) */
+button {
+  padding: 10px 14px;
+  background: #111827;
+  border: none;
+  border-radius: 12px;
+
+  color: white;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: none;
+}
+
+button:hover,
+button:focus,
+button:active {
+  background: #111827;
+  transform: none;
 }
 
 /* SLOT ROW */
@@ -76,39 +114,45 @@ input, select {
   gap: 8px;
 }
 
-.slot-row button {
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-/* BUTTON */
-.primary {
+/* TABLE */
+table {
   width: 100%;
   margin-top: 10px;
-  padding: 12px;
-  background: #111;
-  color: white;
-  border-radius: 12px;
-  border: none;
+  border-collapse: collapse;
 }
 
-/* CHIPS */
-.chips span {
-  display: inline-block;
-  background: #eee;
-  padding: 5px 10px;
-  border-radius: 20px;
-  margin: 5px;
+th {
+  text-align: left;
   font-size: 12px;
+  padding: 12px;
+  background: #f3f4f6;
 }
 
-/* CARD */
-.card {
-  border: 1px solid #eee;
+td {
   padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 10px;
+  border-top: 1px solid #f1f1f1;
+  font-size: 13px;
+}
+
+tr:hover {
+  background: transparent;
+}
+
+/* DELETE */
+td button {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+td button:hover {
+  background: #fee2e2;
+}
+
+/* EMPTY */
+.empty {
+  color: #6b7280;
+  font-size: 13px;
 }

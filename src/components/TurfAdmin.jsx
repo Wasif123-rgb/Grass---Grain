@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./TurfAdmin.css";
+import "./turfAdmin.css";
 
 export default function TurfAdmin() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
   const [turfs, setTurfs] = useState([]);
+  const [selectedTurf, setSelectedTurf] = useState(null);
 
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -12,10 +16,6 @@ export default function TurfAdmin() {
   const [day, setDay] = useState("Monday");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [slots, setSlots] = useState([]);
-
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
 
   const fetchTurfs = async () => {
     const res = await fetch("http://localhost:5000/api/turfs", {
@@ -24,33 +24,65 @@ export default function TurfAdmin() {
 
     const data = await res.json();
     setTurfs(data);
+
+    if (!selectedTurf && data.length > 0) {
+      setSelectedTurf(data[0]);
+    }
   };
 
   useEffect(() => {
     fetchTurfs();
   }, []);
 
-  const addSlot = () => {
-    if (!startTime || !endTime) return;
-    setSlots([...slots, { day, startTime, endTime }]);
-    setStartTime("");
-    setEndTime("");
+  const logout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
-  const addTurf = async () => {
+  const createTurf = async () => {
     await fetch("http://localhost:5000/api/turfs", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ name, location, price, slots }),
+      body: JSON.stringify({ name, location, price }),
     });
 
     setName("");
     setLocation("");
     setPrice("");
-    setSlots([]);
+    fetchTurfs();
+  };
+
+  const addSlot = async () => {
+    if (!selectedTurf) return;
+
+    await fetch(
+      `http://localhost:5000/api/turfs/${selectedTurf._id}/slots`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ day, startTime, endTime }),
+      }
+    );
+
+    setStartTime("");
+    setEndTime("");
+    fetchTurfs();
+  };
+
+  const deleteSlot = async (index) => {
+    await fetch(
+      `http://localhost:5000/api/turfs/${selectedTurf._id}/slots/${index}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     fetchTurfs();
   };
@@ -58,31 +90,65 @@ export default function TurfAdmin() {
   return (
     <div className="page">
 
-      {/* TOP BAR */}
-      <div className="topbar">
-        <div className="logo">🏟 Turf Admin Panel</div>
+      {/* NAVBAR */}
+      <div className="navbar">
+        <h2>🏟 Turf Admin</h2>
 
-        <button className="logout" onClick={() => {
-          localStorage.clear();
-          window.location.href = "/login";
-          }}>
-        Logout
-        </button>
+        <div className="nav-right">
+          <button onClick={logout}>Logout</button>
+        </div>
       </div>
 
-      <div className="container">
+      {/* GRID */}
+      <div className="grid">
 
-        {/* LEFT FORM */}
+        {/* LEFT */}
         <div className="panel">
-          <h2>Create Turf</h2>
+          <h3>Create Turf</h3>
 
-          <input placeholder="Turf Name" value={name} onChange={(e) => setName(e.target.value)} />
-          <input placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
-          <input placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+          <input
+            placeholder="Turf Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <input
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+
+          <input
+            placeholder="Price"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+
+          <button onClick={createTurf}>Create Turf</button>
 
           <hr />
 
-          <h4>Add Slots</h4>
+          <h3>Select Turf</h3>
+
+          <select
+            onChange={(e) =>
+              setSelectedTurf(
+                turfs.find((t) => t._id === e.target.value)
+              )
+            }
+          >
+            {turfs.map((t) => (
+              <option key={t._id} value={t._id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* RIGHT */}
+        <div className="panel">
+
+          <h3>Add Slots</h3>
 
           <div className="slot-row">
             <select value={day} onChange={(e) => setDay(e.target.value)}>
@@ -95,48 +161,51 @@ export default function TurfAdmin() {
               <option>Sunday</option>
             </select>
 
-            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
-            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            />
 
-            <button onClick={addSlot}>+</button>
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+            />
+
+            <button onClick={addSlot}>Add</button>
           </div>
 
-          <div className="chips">
-            {slots.map((s, i) => (
-              <span key={i}>
-                {s.day} {s.startTime}-{s.endTime}
-              </span>
-            ))}
-          </div>
+          <h3 style={{ marginTop: "20px" }}>Slots</h3>
 
-          <button className="primary" onClick={addTurf}>
-            Publish Turf
-          </button>
-        </div>
-
-        {/* RIGHT LIST */}
-        <div className="panel">
-          <h2>My Turfs</h2>
-
-          {turfs.length === 0 ? (
-            <p>No turfs found</p>
+          {!selectedTurf || selectedTurf.slots.length === 0 ? (
+            <p className="empty">No slots added</p>
           ) : (
-            turfs.map((t) => (
-              <div className="card" key={t._id}>
-                <h3>{t.name}</h3>
-                <p>{t.location}</p>
-                <p>৳ {t.price}</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
 
-                <div className="slots">
-                  {t.slots?.map((s, i) => (
-                    <div key={i}>
-                      {s.day} • {s.startTime} - {s.endTime}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))
+              <tbody>
+                {selectedTurf.slots.map((s, i) => (
+                  <tr key={i}>
+                    <td>{s.day}</td>
+                    <td>{s.startTime} - {s.endTime}</td>
+                    <td>
+                      <button onClick={() => deleteSlot(i)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
+
         </div>
 
       </div>
