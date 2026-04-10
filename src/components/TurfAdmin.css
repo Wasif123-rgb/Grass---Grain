@@ -1,32 +1,114 @@
-.turf-admin-page {
+body {
+  margin: 0;
+  font-family: Inter, Arial;
+  background: #f6f7fb;
+  color: #111;
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  font-weight: 600;
+}
+
+.logout {
+  width: 40px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: 1px solid #e5e5e5;
+
+  font-size: 11px;
+  padding: 0;
+
+  border-radius: 6px;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.logout:hover {
+  background: #111;
+  color: white;
+}
+
+/* LAYOUT */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
   padding: 20px;
-  font-family: Arial, sans-serif;
 }
 
-.add-turf-form input {
-  margin: 5px;
-  padding: 5px;
+/* PANEL */
+.panel {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
 }
 
-.add-turf-form button {
-  margin: 5px;
-  padding: 5px 10px;
+/* INPUTS */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
-.turf-list li {
-  margin: 5px 0;
+/* SLOT ROW */
+.slot-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 8px;
 }
-.logout-btn {
-  float: right;
-  padding: 5px 10px;
-  margin: 10px;
-  background-color: #ff4d4d;
+
+.slot-row button {
+  background: #111;
   color: white;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  border-radius: 4px;
 }
 
-.logout-btn:hover {
-  background-color: #e60000;
+/* BUTTON */
+.primary {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: #111;
+  color: white;
+  border-radius: 12px;
+  border: none;
+}
+
+/* CHIPS */
+.chips span {
+  display: inline-block;
+  background: #eee;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin: 5px;
+  font-size: 12px;
+}
+
+/* CARD */
+.card {
+  border: 1px solid #eee;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
 }

@@ -4,74 +4,142 @@ import "./TurfAdmin.css";
 
 export default function TurfAdmin() {
   const [turfs, setTurfs] = useState([]);
+
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
+
+  const [day, setDay] = useState("Monday");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [slots, setSlots] = useState([]);
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   const fetchTurfs = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/turfs", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Fetch failed");
-      const data = await res.json();
-      setTurfs(data);
-    } catch (err) {
-      console.error("FETCH ERROR:", err);
-    }
+    const res = await fetch("http://localhost:5000/api/turfs", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    setTurfs(data);
   };
 
   useEffect(() => {
     fetchTurfs();
   }, []);
 
-  const handleAdd = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/turfs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name, location, price }),
-      });
-      if (!res.ok) throw new Error("Add failed");
-      setName(""); setLocation(""); setPrice(0);
-      fetchTurfs();
-    } catch (err) {
-      console.error("ADD ERROR:", err);
-      alert("Failed to add turf");
-    }
+  const addSlot = () => {
+    if (!startTime || !endTime) return;
+    setSlots([...slots, { day, startTime, endTime }]);
+    setStartTime("");
+    setEndTime("");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+  const addTurf = async () => {
+    await fetch("http://localhost:5000/api/turfs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name, location, price, slots }),
+    });
+
+    setName("");
+    setLocation("");
+    setPrice("");
+    setSlots([]);
+
+    fetchTurfs();
   };
 
   return (
-    <div className="turf-admin-page">
-      <button className="logout-btn" onClick={handleLogout}>Logout</button>
-      <h2>Turf Admin Dashboard</h2>
+    <div className="page">
 
-      <div className="add-turf-form">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Turf Name" />
-        <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
-        <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} placeholder="Price" />
-        <button onClick={handleAdd}>Add Turf</button>
+      {/* TOP BAR */}
+      <div className="topbar">
+        <div className="logo">🏟 Turf Admin Panel</div>
+
+        <button className="logout" onClick={() => {
+          localStorage.clear();
+          window.location.href = "/login";
+          }}>
+        Logout
+        </button>
       </div>
 
-      <h3>All Turfs</h3>
-      <ul className="turf-list">
-        {turfs.map((turf) => (
-          <li key={turf._id}>
-            {turf.name} - {turf.location} - ${turf.price}
-          </li>
-        ))}
-      </ul>
+      <div className="container">
+
+        {/* LEFT FORM */}
+        <div className="panel">
+          <h2>Create Turf</h2>
+
+          <input placeholder="Turf Name" value={name} onChange={(e) => setName(e.target.value)} />
+          <input placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
+          <input placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+
+          <hr />
+
+          <h4>Add Slots</h4>
+
+          <div className="slot-row">
+            <select value={day} onChange={(e) => setDay(e.target.value)}>
+              <option>Monday</option>
+              <option>Tuesday</option>
+              <option>Wednesday</option>
+              <option>Thursday</option>
+              <option>Friday</option>
+              <option>Saturday</option>
+              <option>Sunday</option>
+            </select>
+
+            <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+            <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+
+            <button onClick={addSlot}>+</button>
+          </div>
+
+          <div className="chips">
+            {slots.map((s, i) => (
+              <span key={i}>
+                {s.day} {s.startTime}-{s.endTime}
+              </span>
+            ))}
+          </div>
+
+          <button className="primary" onClick={addTurf}>
+            Publish Turf
+          </button>
+        </div>
+
+        {/* RIGHT LIST */}
+        <div className="panel">
+          <h2>My Turfs</h2>
+
+          {turfs.length === 0 ? (
+            <p>No turfs found</p>
+          ) : (
+            turfs.map((t) => (
+              <div className="card" key={t._id}>
+                <h3>{t.name}</h3>
+                <p>{t.location}</p>
+                <p>৳ {t.price}</p>
+
+                <div className="slots">
+                  {t.slots?.map((s, i) => (
+                    <div key={i}>
+                      {s.day} • {s.startTime} - {s.endTime}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }
