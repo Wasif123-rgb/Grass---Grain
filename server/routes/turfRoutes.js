@@ -1,30 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Turf = require("../models/Turf");
-const jwt = require("jsonwebtoken");
 
-const SECRET = process.env.JWT_SECRET || "secret";
-
-/* ================= AUTH ================= */
-const auth = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
-};
-
-/* ================= GET ALL TURFS (PUBLIC) ================= */
+// ================= GET ALL TURFS (PUBLIC) =================
 router.get("/all", async (req, res) => {
   try {
     const turfs = await Turf.find({});
@@ -34,18 +12,8 @@ router.get("/all", async (req, res) => {
   }
 });
 
-/* ================= ADMIN TURFS ================= */
-router.get("/admin", auth, async (req, res) => {
-  try {
-    const turfs = await Turf.find({ adminId: req.user.id });
-    res.json(turfs);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-/* ================= CREATE TURF ================= */
-router.post("/", auth, async (req, res) => {
+// ================= CREATE TURF (NO AUTH for now) =================
+router.post("/", async (req, res) => {
   try {
     const { name, location, price } = req.body;
 
@@ -53,7 +21,7 @@ router.post("/", auth, async (req, res) => {
       name,
       location,
       price,
-      adminId: req.user.id,
+      adminId: "demo-admin",
       slots: [],
     });
 
@@ -63,8 +31,8 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-/* ================= ADD SLOT ================= */
-router.post("/:id/slots", auth, async (req, res) => {
+// ================= ADD SLOT =================
+router.post("/:id/slots", async (req, res) => {
   try {
     const turf = await Turf.findById(req.params.id);
     if (!turf) return res.status(404).json({ message: "Not found" });
@@ -78,8 +46,8 @@ router.post("/:id/slots", auth, async (req, res) => {
   }
 });
 
-/* ================= BOOK SLOT ================= */
-router.post("/book/:turfId", auth, async (req, res) => {
+// ================= BOOK SLOT =================
+router.post("/book/:turfId", async (req, res) => {
   try {
     const { slotIndex } = req.body;
 
@@ -87,7 +55,6 @@ router.post("/book/:turfId", auth, async (req, res) => {
     if (!turf) return res.status(404).json({ message: "Turf not found" });
 
     const slot = turf.slots[slotIndex];
-
     if (!slot) return res.status(404).json({ message: "Slot not found" });
 
     if (slot.isBooked) {
@@ -95,11 +62,26 @@ router.post("/book/:turfId", auth, async (req, res) => {
     }
 
     slot.isBooked = true;
-    slot.bookedBy = req.user.id;
+    slot.bookedBy = "demo-user";
 
     await turf.save();
 
     res.json({ message: "Booked successfully", turf });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ================= DELETE SLOT =================
+router.delete("/:id/slots/:index", async (req, res) => {
+  try {
+    const turf = await Turf.findById(req.params.id);
+    if (!turf) return res.status(404).json({ message: "Not found" });
+
+    turf.slots.splice(req.params.index, 1);
+    await turf.save();
+
+    res.json(turf);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

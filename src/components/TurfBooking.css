@@ -1,77 +1,156 @@
-.bookingPage {
-  font-family: "Inter", sans-serif;
-  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+.turf-page {
   min-height: 100vh;
-  padding: 20px;
+  padding: 50px 20px;
+  background: linear-gradient(135deg, #f6f9fc, #eef2f7);
+  font-family: "Poppins", sans-serif;
 }
 
-/* TOP BAR */
-.topBar {
+/* ================= HEADER ================= */
+.turf-header {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.turf-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2d3d;
+}
+
+/* FLOATING LOGOUT BUTTON (TOP RIGHT SMALL) */
+.turf-logout {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+
+  border: 1px solid rgba(220, 53, 69, 0.25);
+
+  width: 70px;
+  height: 28px;
+
+  border-radius: 8px;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  cursor: pointer;
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: center;
+
+  transition: 0.2s ease;
 }
 
-/* GRID */
-.grid {
+.turf-logout:hover {
+  background: #dc3545;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ================= GRID ================= */
+.turf-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
 }
 
-/* CARD */
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
+/* ================= CARD ================= */
+.turf-card {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.08);
+
+  transition: all 0.3s ease;
 }
 
-/* SLOT BOX */
-.slotBox {
+.turf-card:hover {
+  transform: translateY(-6px);
+}
+
+/* CARD HEADER */
+.turf-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.turf-card h3 {
+  font-size: 18px;
+  color: #1f2d3d;
+  margin: 0;
+}
+
+.turf-price {
+  background: rgba(46, 204, 113, 0.15);
+  color: #1e7e34;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* LOCATION */
+.turf-location {
+  font-size: 13px;
+  color: #6c7a89;
+  margin-top: 6px;
+}
+
+/* ================= SLOTS ================= */
+.turf-slots {
+  margin-top: 12px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding-top: 10px;
+}
+
+.turf-slot {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  padding: 8px;
-  margin-top: 6px;
-
-  background: #f1f5f9;
-  border-radius: 8px;
-  font-size: 12px;
+  margin: 8px 0;
+  font-size: 13px;
+  color: #2f3e4d;
 }
 
-/* BUTTONS */
-.bookBtn {
-  background: #111827;
+/* ================= BOOK BUTTON ================= */
+.turf-book {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;
+
   border: none;
-  padding: 5px 8px;
-  border-radius: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+
+  font-size: 11px;
   cursor: pointer;
+
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
 }
 
-.bookedBtn {
-  background: gray;
-  color: white;
-  border: none;
-  padding: 5px 8px;
-  border-radius: 6px;
+.turf-book:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(46, 204, 113, 0.35);
 }
 
-/* LOGOUT */
-.logoutBtn {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+/* ================= BOOKED BUTTON ================= */
+.turf-booked {
+  background: rgba(220, 53, 69, 0.1);
+  color: #a71d2a;
 
-/* TEXT */
-.noSlots {
-  font-size: 12px;
-  color: gray;
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  padding: 5px 12px;
+  border-radius: 999px;
+
+  font-size: 11px;
+  cursor: not-allowed;
 }

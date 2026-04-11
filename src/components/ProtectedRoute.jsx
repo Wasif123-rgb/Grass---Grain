@@ -2,51 +2,54 @@ import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function ProtectedRoute({ children, allowedRoles = [] }) {
-  // Initialize state from localStorage
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser && storedUser !== "undefined"
-      ? JSON.parse(storedUser)
-      : null;
+    try {
+      const u = localStorage.getItem("user");
+      return u && u !== "undefined" ? JSON.parse(u) : null;
+    } catch {
+      return null;
+    }
   });
 
-  // Poll localStorage every 500ms to detect changes
+  // 🔥 REAL-TIME WATCH (RESTORES YOUR OLD SYSTEM)
   useEffect(() => {
     const interval = setInterval(() => {
       const newToken = localStorage.getItem("token");
 
-      const storedUser = localStorage.getItem("user");
-      const newUser =
-        storedUser && storedUser !== "undefined"
-          ? JSON.parse(storedUser)
-          : null;
+      let newUser = null;
+      try {
+        const u = localStorage.getItem("user");
+        newUser = u && u !== "undefined" ? JSON.parse(u) : null;
+      } catch {
+        newUser = null;
+      }
 
-      if (newToken !== token) setToken(newToken);
-      if (JSON.stringify(newUser) !== JSON.stringify(user)) setUser(newUser);
-    }, 500);
+      setToken(newToken);
+      setUser(newUser);
+    }, 300); // faster reaction = instant logout
 
     return () => clearInterval(interval);
-  }, [token, user]);
+  }, []);
 
-  // If token is missing or clearly invalid, log out
+  // ❌ INVALID TOKEN = LOGOUT IMMEDIATELY
   if (
-    !token || 
-    !user || 
-    token === "null" || 
-    token === "undefined" || 
-    token.length < 10 // optional: catch very short fake tokens like "jjj"
+    !token ||
+    token === "null" ||
+    token === "undefined" ||
+    token.length < 10 ||
+    !user
   ) {
     return <Navigate to="/login" />;
   }
 
-  // If allowedRoles is defined and user role is not included
+  // ❌ ROLE CHECK
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
     if (user.role === "admin") return <Navigate to="/admin" />;
     if (user.role === "customer") return <Navigate to="/restaurants" />;
     return <Navigate to="/" />;
   }
 
-  // Everything is fine → render children
+  // ✅ ALLOW ACCESS
   return children;
 }
