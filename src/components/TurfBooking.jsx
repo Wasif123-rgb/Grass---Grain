@@ -78,9 +78,7 @@ export default function TurfBooking() {
                   <button
                     disabled={s.isBooked}
                     onClick={() => bookSlot(turf._id, i)}
-                    className={
-                      s.isBooked ? "turf-booked" : "turf-book"
-                    }
+                    className={s.isBooked ? "turf-booked" : "turf-book"}
                   >
                     {s.isBooked ? "Booked" : "Book"}
                   </button>

@@ -1,0 +1,97 @@
+.booking-page {
+  min-height: 100vh;
+  background: #f6f9fc;
+  font-family: "Poppins", sans-serif;
+  padding: 30px;
+}
+
+/* HEADER */
+.booking-header {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.booking-header h1 {
+  font-size: 26px;
+  color: #1f2d3d;
+}
+
+/* LOGOUT */
+.logout-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 70px;
+  height: 26px;
+
+  padding: 0;
+
+  font-size: 11px;
+  line-height: 26px;
+
+  background: #ef4444;
+  color: white;
+
+  border: none;
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* GRID */
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* CARD */
+.booking-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  transition: 0.3s;
+}
+
+.booking-card:hover {
+  transform: translateY(-5px);
+}
+
+.booking-card h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.booking-card p {
+  font-size: 13px;
+  color: gray;
+}
+
+/* SLOT */
+.slot {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+/* BOOKED BY */
+.booked-by {
+  margin-top: 10px;
+  font-size: 12px;
+  color: green;
+}

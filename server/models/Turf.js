@@ -5,13 +5,10 @@ const SlotSchema = new mongoose.Schema({
   startTime: String,
   endTime: String,
 
-  isBooked: {
-    type: Boolean,
-    default: false,
-  },
+  isBooked: { type: Boolean, default: false },
 
   bookedBy: {
-    type: String,
+    type: String, // user name / id (simple)
     default: null,
   },
 });
@@ -21,10 +18,7 @@ const TurfSchema = new mongoose.Schema(
     name: String,
     location: String,
     price: Number,
-    adminId: {
-      type: String,
-      default: "demo-admin",
-    },
+    adminId: String,
     slots: [SlotSchema],
   },
   { timestamps: true }

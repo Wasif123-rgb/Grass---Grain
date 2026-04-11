@@ -16,21 +16,24 @@ export default function TurfAdmin() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  /* ================= FETCH ================= */
+  /* ================= FETCH TURFS ================= */
   const fetchTurfs = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return navigate("/login");
+    try {
+      const res = await fetch("http://localhost:5000/api/turfs/all");
+      const data = await res.json();
 
-    const res = await fetch("http://localhost:5000/api/turfs/admin", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const safeData = Array.isArray(data) ? data : [];
+      setTurfs(safeData);
 
-    const data = await res.json();
-
-    setTurfs(Array.isArray(data) ? data : []);
-
-    if (data.length > 0) {
-      setActiveTurf(data[0]);
+      if (safeData.length > 0) {
+        setActiveTurf(safeData[0]);
+      } else {
+        setActiveTurf(null);
+      }
+    } catch (err) {
+      console.log(err);
+      setTurfs([]);
+      setActiveTurf(null);
     }
   };
 
@@ -38,24 +41,22 @@ export default function TurfAdmin() {
     fetchTurfs();
   }, []);
 
-  /* ================= CREATE TURF (NO CLEAR INPUTS) ================= */
+  /* ================= CREATE TURF ================= */
   const createTurf = async () => {
-    const token = localStorage.getItem("token");
+    if (!name || !location || !price) {
+      return alert("Fill all fields");
+    }
 
     const res = await fetch("http://localhost:5000/api/turfs", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, location, price }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message);
-      return;
+      return alert(data.message);
     }
 
     alert("Turf created!");
@@ -63,12 +64,11 @@ export default function TurfAdmin() {
     fetchTurfs();
   };
 
-  /* ================= ADD SLOT (NO DUPLICATE) ================= */
+  /* ================= ADD SLOT ================= */
   const addSlot = async () => {
     if (!activeTurf) return alert("Create turf first");
     if (!startTime || !endTime) return alert("Enter time");
 
-    // ❌ prevent duplicate slot
     const duplicate = activeTurf.slots?.some(
       (s) =>
         s.day === day &&
@@ -80,16 +80,11 @@ export default function TurfAdmin() {
       return alert("Slot already exists ❌");
     }
 
-    const token = localStorage.getItem("token");
-
     const res = await fetch(
       `http://localhost:5000/api/turfs/${activeTurf._id}/slots`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ day, startTime, endTime }),
       }
     );
@@ -106,13 +101,10 @@ export default function TurfAdmin() {
 
   /* ================= DELETE SLOT ================= */
   const deleteSlot = async (index) => {
-    const token = localStorage.getItem("token");
-
     await fetch(
       `http://localhost:5000/api/turfs/${activeTurf._id}/slots/${index}`,
       {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
@@ -129,25 +121,60 @@ export default function TurfAdmin() {
   return (
     <div className="page">
 
+      {/* NAVBAR */}
       <div className="navbar">
-        <h2>🏟 Turf Admin</h2>
+        <h2 className="title">🏟 Turf Admin</h2>
 
-        <button className="logoutBtn" onClick={logout}>
-          Logout
-        </button>
+        <div style={{ marginLeft: "auto", display: "flex", gap: "10px" }}>
+
+          <button
+            onClick={() => navigate("/bookings")}
+            style={{
+              background: "#111",
+              color: "white",
+              border: "none",
+              padding: "6px 10px",
+              fontSize: "12px",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            Bookings
+          </button>
+
+          <button className="logoutBtn" onClick={logout}>
+            Logout
+          </button>
+
+        </div>
       </div>
 
+      {/* GRID */}
       <div className="grid">
 
         {/* CREATE TURF */}
         <div className="panel">
           <h3>Create Turf</h3>
 
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-          <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
-          <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Name"
+          />
+          <input
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Location"
+          />
+          <input
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder="Price"
+          />
 
-          <button onClick={createTurf}>Create</button>
+          <button onClick={createTurf} className="primary">
+            Create Turf
+          </button>
         </div>
 
         {/* ADD SLOT */}
@@ -164,8 +191,17 @@ export default function TurfAdmin() {
             <option>Sunday</option>
           </select>
 
-          <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
-          <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+          <input
+            type="time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+          />
+
+          <input
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+          />
 
           <button onClick={addSlot}>Add Slot</button>
 
@@ -175,12 +211,12 @@ export default function TurfAdmin() {
             <p>No slots</p>
           ) : (
             activeTurf.slots.map((s, i) => (
-              <div key={i}>
-                {s.day} | {s.startTime} - {s.endTime}
+              <div key={i} style={{ display: "flex", gap: "10px" }}>
+                <span>
+                  {s.day} | {s.startTime} - {s.endTime}
+                </span>
 
-                <button onClick={() => deleteSlot(i)}>
-                  Delete
-                </button>
+                <button onClick={() => deleteSlot(i)}>Delete</button>
               </div>
             ))
           )}
