@@ -7,13 +7,20 @@ export default function Home() {
   const navigate = useNavigate();
 
   // ================= FUNCTION TO HANDLE BOOK TURF =================
- const navigateToTurf = () => {
+const navigateToTurf = () => {
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  if (!token || token === "null" || token === "undefined" || token.length < 10) {
+  if (!token || token.length < 10) {
     navigate("/login", { state: { redirectTo: "/book-turf" } });
-  } else {
+    return;
+  }
+
+  // ONLY CUSTOMER CAN BOOK TURF
+  if (user.role === "customer") {
     navigate("/book-turf");
+  } else {
+    alert("Only customers can book turfs");
   }
 };
 

@@ -1,118 +1,90 @@
 .page {
   font-family: "Inter", sans-serif;
-  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  background: #f6f7fb;
   min-height: 100vh;
-  color: #111827;
 }
 
-/* NAVBAR */
+/* NAVBAR FIX */
 .navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 14px 24px;
-  background: rgba(255,255,255,0.9);
+  background: white;
   border-bottom: 1px solid #e5e7eb;
 }
 
+/* PUSH TITLE LEFT */
 .title {
   font-size: 18px;
   font-weight: 600;
 }
 
-.navRight {
-  display: flex;
-  align-items: center;
+/* THIS FIXES RIGHT ALIGNMENT */
+.logoutBtn {
+  margin-left: auto;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 80px;
+  height: 30px;
 }
 
 /* GRID */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1.6fr;
-  gap: 22px;
-  padding: 28px;
+  gap: 20px;
+  padding: 25px;
 }
 
 /* PANEL */
 .panel {
   background: white;
-  border-radius: 16px;
   padding: 20px;
-  border: 1px solid #e5e7eb;
+  border-radius: 12px;
 }
 
-/* INPUT + SELECT */
-.input,
-.select {
+/* INPUT */
+.input, .select {
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px;
   margin-bottom: 10px;
-
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-
-  outline: none;
-  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-/* SLOT ROW (FIXED SPACING) */
+/* SLOT ROW FIX SPACING */
 .slotRow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 12px;
-  align-items: center;
+  gap: 10px;
 }
 
-/* ================= BUTTONS ================= */
-
-/* PRIMARY */
+/* BUTTON */
 .primary {
-  background: #111827;
+  background: black;
   color: white;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-/* NO HOVER CHANGE */
-.primary:hover {
-  background: #111827;
-  color: white;
-}
-
-/* DANGER */
-.danger {
-  background: #fff;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.danger:hover {
-  background: #fff;
-  color: #dc2626;
-}
-
-/* LOGOUT */
-.logoutBtn {
-  background: #ef4444;
-  color: white;
-
-  padding: 6px 10px;
-  font-size: 12px;
-
+  padding: 10px;
   border: none;
   border-radius: 8px;
-
   cursor: pointer;
 }
 
-.logoutBtn:hover {
-  background: #ef4444;
-  color: white;
+/* SMALL DELETE BUTTON FIX */
+.dangerSmall {
+  background: white;
+  color: red;
+  border: 1px solid red;
+  padding: 3px 6px;
+  font-size: 11px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 35px;
+  height: 24px;
 }
 
 /* TABLE */
@@ -123,13 +95,7 @@ table {
 }
 
 th, td {
-  padding: 12px;
+  padding: 10px;
   border-top: 1px solid #eee;
-  font-size: 13px;
-}
-
-.empty {
-  text-align: center;
-  color: gray;
   font-size: 13px;
 }

@@ -8,49 +8,16 @@ export default function Login() {
   const location = useLocation();
   const redirectTo = location.state?.redirectTo || null;
 
-  /* ================= LOGIN STATES ================= */
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  /* ================= SIGNUP STATES ================= */
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
   const [signupRole, setSignupRole] = useState("customer");
 
-  /* ================= AUTO REDIRECT ================= */
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      const storedUser = localStorage.getItem("user");
-
-      if (!token || !storedUser || storedUser === "undefined" || token === "null" || token === "undefined" || token.length < 10) {
-        return; // invalid → stay on login page
-      }
-
-      try {
-        const user = JSON.parse(storedUser);
-
-        if (user?.role === "admin") {
-          navigate("/admin");
-        } else if (user?.role === "customer") {
-          navigate("/restaurants");
-        }
-      } catch (err) {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-      }
-    };
-
-    checkAuth();
-
-    const interval = setInterval(checkAuth, 500);
-
-    return () => clearInterval(interval);
-  }, [navigate]);
-
-  /* ================= LOGIN FUNCTION ================= */
+  /* ================= LOGIN ================= */
   const handleLogin = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/login", {
@@ -60,6 +27,7 @@ export default function Login() {
       });
 
       const data = await res.json();
+
       if (!res.ok) {
         alert(data.message);
         return;
@@ -70,7 +38,10 @@ export default function Login() {
 
       alert("Login successful 🚀");
 
-      if (data.user.role === "admin") {
+      // ✅ ONLY FIX (NO UI CHANGE)
+      const role = data.user.role;
+
+      if (role === "admin") {
         if (redirectTo === "/book-turf") {
           navigate("/turf-admin");
         } else {
@@ -79,13 +50,14 @@ export default function Login() {
       } else {
         navigate(redirectTo || "/restaurants");
       }
+
     } catch (error) {
       console.error(error);
       alert("Something went wrong");
     }
   };
 
-  /* ================= SIGNUP FUNCTION ================= */
+  /* ================= SIGNUP ================= */
   const handleSignup = async () => {
     if (signupPassword !== signupConfirmPassword) {
       alert("Passwords do not match");
@@ -105,6 +77,7 @@ export default function Login() {
       });
 
       const data = await res.json();
+
       if (!res.ok) {
         alert(data.message);
         return;
@@ -115,7 +88,10 @@ export default function Login() {
 
       alert("Signup successful 🚀");
 
-      if (data.user.role === "admin") {
+      // ✅ SAME FIX HERE ALSO
+      const role = data.user.role;
+
+      if (role === "admin") {
         if (redirectTo === "/book-turf") {
           navigate("/turf-admin");
         } else {
@@ -124,6 +100,7 @@ export default function Login() {
       } else {
         navigate(redirectTo || "/restaurants");
       }
+
     } catch (error) {
       console.error(error);
       alert("Something went wrong");

@@ -4,19 +4,22 @@ import "./TurfBooking.css";
 
 export default function TurfBooking() {
   const [turfs, setTurfs] = useState([]);
-  const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  /* ================= FETCH TURFS ================= */
   const fetchTurfs = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/turfs/all", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch("http://localhost:5000/api/turfs/all");
 
       const data = await res.json();
-      setTurfs(data);
+
+      setTurfs(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.log(err);
+      console.log("Error fetching turfs:", err);
+      setTurfs([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -24,7 +27,15 @@ export default function TurfBooking() {
     fetchTurfs();
   }, []);
 
+  /* ================= BOOK SLOT ================= */
   const handleBook = async (turfId, index) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     try {
       const res = await fetch(
         `http://localhost:5000/api/turfs/book/${turfId}`,
@@ -46,67 +57,72 @@ export default function TurfBooking() {
         alert("Booked successfully!");
         fetchTurfs();
       }
-    } catch {
+    } catch (err) {
       alert("Booking failed");
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
   };
 
   return (
     <div className="bookingPage">
 
+      {/* TOP BAR */}
       <div className="topBar">
         <h2>Available Turfs</h2>
-        <button className="logoutBtn" onClick={handleLogout}>
+
+        <button
+          className="logoutBtn"
+          onClick={() => {
+            localStorage.clear();
+            navigate("/login");
+          }}
+        >
           Logout
         </button>
       </div>
 
+      {/* GRID */}
       <div className="grid">
 
-        {turfs.length === 0 ? (
+        {loading ? (
+          <p>Loading...</p>
+        ) : turfs.length === 0 ? (
           <p>No turfs found</p>
         ) : (
           turfs.map((turf) => (
             <div key={turf._id} className="card">
-
               <h3>{turf.name}</h3>
               <p>{turf.location}</p>
               <p>₹ {turf.price}</p>
 
               <div className="slots">
-                {turf.slots?.map((s, i) => (
-                  <div key={i} className="slotBox">
+                {turf.slots?.length > 0 ? (
+                  turf.slots.map((s, i) => (
+                    <div key={i} className="slotBox">
+                      <span>
+                        {s.day} | {s.startTime} - {s.endTime}
+                      </span>
 
-                    <span>
-                      {s.day} | {s.startTime} - {s.endTime}
-                    </span>
-
-                    {s.isBooked ? (
-                      <button disabled className="bookedBtn">
-                        Booked
-                      </button>
-                    ) : (
-                      <button
-                        className="bookBtn"
-                        onClick={() => handleBook(turf._id, i)}
-                      >
-                        Book
-                      </button>
-                    )}
-
-                  </div>
-                ))}
+                      {s.isBooked ? (
+                        <button disabled className="bookedBtn">
+                          Booked
+                        </button>
+                      ) : (
+                        <button
+                          className="bookBtn"
+                          onClick={() => handleBook(turf._id, i)}
+                        >
+                          Book
+                        </button>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p>No slots available</p>
+                )}
               </div>
-
             </div>
           ))
         )}
-
       </div>
     </div>
   );
