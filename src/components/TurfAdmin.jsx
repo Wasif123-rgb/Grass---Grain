@@ -60,8 +60,6 @@ export default function TurfAdmin() {
 
     alert("Turf created!");
 
-    // ❌ DO NOT CLEAR INPUTS (your request)
-
     fetchTurfs();
   };
 
