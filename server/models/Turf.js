@@ -1,36 +1,30 @@
 const mongoose = require("mongoose");
 
-/* ================= SLOT ================= */
 const SlotSchema = new mongoose.Schema({
-  day: { type: String, required: true },
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
+  day: String,
+  startTime: String,
+  endTime: String,
 
-  // booking status
   isBooked: {
     type: Boolean,
     default: false,
   },
 
-  // who booked it
   bookedBy: {
-    type: String, // ⚠️ changed to String for simplicity (stable)
+    type: String,
     default: null,
   },
 });
 
-/* ================= TURF ================= */
 const TurfSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    location: { type: String, default: "" },
-    price: { type: Number, default: 0 },
-
+    name: String,
+    location: String,
+    price: Number,
     adminId: {
-      type: String, // ⚠️ simplified (no auth dependency issues)
+      type: String,
       default: "demo-admin",
     },
-
     slots: [SlotSchema],
   },
   { timestamps: true }
