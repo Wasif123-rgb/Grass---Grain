@@ -13,7 +13,7 @@ import Contact from "./components/Contact";
 import AdminOrders from "./components/AdminOrders";
 import MyOrders from "./components/MyOrders";
 import Bookings from "./components/Bookings";
-
+import MyBookings from "./components/MyBookings";
 export default function App() {
   return (
     <Routes>
@@ -83,6 +83,7 @@ export default function App() {
         }
       />
       <Route path="/bookings" element={<Bookings />} />
+      <Route path="/my-bookings" element={<MyBookings />} />
 
       {/* REDIRECT */}
       <Route path="*" element={<Navigate to="/" />} />

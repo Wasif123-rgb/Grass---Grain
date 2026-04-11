@@ -18,18 +18,20 @@ export default function Bookings() {
 
       {/* HEADER */}
       <div className="booking-header">
-        <h1>📋 Bookings Dashboard</h1>
+  <h1>📋 Bookings Dashboard</h1>
 
-        <button
-          className="logout-btn"
-          onClick={() => {
-            localStorage.clear();
-            navigate("/login");
-          }}
-        >
-          Logout
-        </button>
-      </div>
+  <div className="header-actions">
+    <button
+      className="mini-btn logout"
+      onClick={() => {
+        localStorage.clear();
+        navigate("/login");
+      }}
+    >
+      Logout
+    </button>
+  </div>
+</div>
 
       {/* GRID */}
       <div className="booking-grid">

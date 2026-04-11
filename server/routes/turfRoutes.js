@@ -84,4 +84,32 @@ router.get("/admin/bookings", async (req, res) => {
   res.json(bookings);
 });
 
+router.get("/my-bookings/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const turfs = await Turf.find({});
+
+    const myBookings = [];
+
+    turfs.forEach((turf) => {
+      turf.slots.forEach((slot) => {
+        if (slot.isBooked && slot.bookedBy === userId) {
+          myBookings.push({
+            turfId: turf._id,
+            turfName: turf.name,
+            location: turf.location,
+            day: slot.day,
+            time: `${slot.startTime} - ${slot.endTime}`,
+          });
+        }
+      });
+    });
+
+    res.json(myBookings);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

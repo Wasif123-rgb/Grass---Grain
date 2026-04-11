@@ -6,37 +6,36 @@
 }
 
 /* ================= HEADER ================= */
+/* HEADER FIX */
 .turf-header {
   position: relative;
   margin-bottom: 35px;
 }
 
-.turf-header h1 {
-  font-size: 30px;
-  font-weight: 700;
-  color: #1f2d3d;
-}
-
-/* FIXED TOP RIGHT SMALL BUTTON */
-.turf-logout {
+/* ACTIONS RIGHT */
+.header-actions {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  gap: 6px;
+}
 
-  background: rgba(220, 53, 69, 0.08);
-  color: #dc3545;
+/* SMALL BUTTON BASE */
+.mini-btn {
+  height: 26px;
+  min-width: 65px;
 
-  border: 1px solid rgba(220, 53, 69, 0.25);
-
-  padding: 4px 10px;
+  padding: 0 8px;
   font-size: 11px;
 
-  border-radius: 8px;
+  border: none;
+  border-radius: 6px;
+
+  background: #111;
+  color: white;
 
   cursor: pointer;
-
-  height: 26px;
-  width: 70px;
 
   display: flex;
   align-items: center;
@@ -45,10 +44,13 @@
   transition: 0.2s ease;
 }
 
-.turf-logout:hover {
-  background: #dc3545;
-  color: white;
-  transform: translateY(-2px);
+/* LOGOUT STYLE */
+.mini-btn.logout {
+  background: #ef4444;
+}
+
+.mini-btn:hover {
+  transform: scale(1.05);
 }
 
 /* ================= GRID ================= */

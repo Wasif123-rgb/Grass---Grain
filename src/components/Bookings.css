@@ -1,3 +1,4 @@
+/* ROOT PAGE */
 .booking-page {
   min-height: 100vh;
   background: #f6f9fc;
@@ -6,35 +7,38 @@
 }
 
 /* HEADER */
-.booking-header {
+.booking-page .booking-header {
   position: relative;
   margin-bottom: 25px;
 }
 
-.booking-header h1 {
+.booking-page .booking-header h1 {
   font-size: 26px;
   color: #1f2d3d;
 }
 
-/* LOGOUT */
-.logout-btn {
+/* BUTTON GROUP (RIGHT SIDE) */
+.booking-page .header-actions {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  gap: 6px;
+}
 
-  width: 70px;
-  height: 26px;
+/* SMALL BUTTON BASE */
+.booking-page .mini-btn {
+  height: 24px;
+  min-width: 60px;
 
-  padding: 0;
-
-  font-size: 11px;
-  line-height: 26px;
-
-  background: #ef4444;
-  color: white;
+  padding: 0 6px;
+  font-size: 10px;
 
   border: none;
   border-radius: 6px;
+
+  background: #111;
+  color: white;
 
   cursor: pointer;
 
@@ -45,44 +49,47 @@
   transition: 0.2s ease;
 }
 
-.logout-btn:hover {
-  background: #dc2626;
+/* LOGOUT BUTTON */
+.booking-page .mini-btn.logout {
+  background: #ef4444;
+}
+
+.booking-page .mini-btn:hover {
   transform: scale(1.05);
 }
 
 /* GRID */
-.booking-grid {
+.booking-page .booking-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 18px;
 }
 
 /* CARD */
-.booking-card {
+.booking-page .booking-card {
   background: white;
   padding: 16px;
   border-radius: 14px;
-
   box-shadow: 0 10px 25px rgba(0,0,0,0.06);
   transition: 0.3s;
 }
 
-.booking-card:hover {
+.booking-page .booking-card:hover {
   transform: translateY(-5px);
 }
 
-.booking-card h3 {
+.booking-page .booking-card h3 {
   margin: 0;
   font-size: 18px;
 }
 
-.booking-card p {
+.booking-page .booking-card p {
   font-size: 13px;
   color: gray;
 }
 
 /* SLOT */
-.slot {
+.booking-page .slot {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
@@ -90,7 +97,7 @@
 }
 
 /* BOOKED BY */
-.booked-by {
+.booking-page .booked-by {
   margin-top: 10px;
   font-size: 12px;
   color: green;

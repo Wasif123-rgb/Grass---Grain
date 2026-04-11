@@ -39,19 +39,29 @@ export default function TurfBooking() {
     <div className="turf-page">
 
       {/* HEADER */}
+      
       <div className="turf-header">
-        <h1>🏟 Turf Booking</h1>
+      <h1>🏟 Turf Booking</h1>
 
-        <button
-          className="turf-logout"
-          onClick={() => {
-            localStorage.clear();
-            navigate("/login");
-          }}
-        >
-          Logout
-        </button>
+      <div className="header-actions">
+      <button
+        className="mini-btn"
+        onClick={() => navigate("/my-bookings")}
+      >
+      My Bookings
+      </button>
+
+      <button
+        className="mini-btn logout"
+        onClick={() => {
+        localStorage.clear();
+        navigate("/login");
+      }}
+      >
+      Logout
+      </button>
       </div>
+    </div>
 
       {/* GRID */}
       <div className="turf-grid">

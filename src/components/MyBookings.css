@@ -1,0 +1,32 @@
+.my-page {
+  min-height: 100vh;
+  background: #f6f9fc;
+  padding: 30px;
+  font-family: "Poppins", sans-serif;
+}
+
+.my-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.my-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.my-card {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.slot {
+  margin-top: 10px;
+  font-size: 13px;
+  color: green;
+}
