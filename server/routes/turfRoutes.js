@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Turf = require("../models/Turf");
 
-// ================= GET ALL TURFS (PUBLIC) =================
+/* ================= GET ALL TURFS (PUBLIC) ================= */
 router.get("/all", async (req, res) => {
   try {
     const turfs = await Turf.find({});
@@ -12,7 +12,7 @@ router.get("/all", async (req, res) => {
   }
 });
 
-// ================= CREATE TURF (NO AUTH for now) =================
+/* ================= CREATE TURF ================= */
 router.post("/", async (req, res) => {
   try {
     const { name, location, price } = req.body;
@@ -31,22 +31,43 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ================= ADD SLOT =================
+/* ================= ADD SLOT ================= */
 router.post("/:id/slots", async (req, res) => {
   try {
     const turf = await Turf.findById(req.params.id);
     if (!turf) return res.status(404).json({ message: "Not found" });
 
-    turf.slots.push(req.body);
+    const { day, startTime, endTime } = req.body;
+
+    // ❌ prevent duplicate slots
+    const exists = turf.slots.some(
+      (s) =>
+        s.day === day &&
+        s.startTime === startTime &&
+        s.endTime === endTime
+    );
+
+    if (exists) {
+      return res.status(400).json({ message: "Slot already exists" });
+    }
+
+    turf.slots.push({
+      day,
+      startTime,
+      endTime,
+      isBooked: false,
+      bookedBy: null,
+    });
 
     await turf.save();
+
     res.json(turf);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// ================= BOOK SLOT =================
+/* ================= BOOK SLOT ================= */
 router.post("/book/:turfId", async (req, res) => {
   try {
     const { slotIndex } = req.body;
@@ -62,23 +83,29 @@ router.post("/book/:turfId", async (req, res) => {
     }
 
     slot.isBooked = true;
+
+    // demo booking user (later replace with real user id)
     slot.bookedBy = "demo-user";
 
     await turf.save();
 
-    res.json({ message: "Booked successfully", turf });
+    res.json({
+      message: "Booked successfully",
+      turf,
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// ================= DELETE SLOT =================
+/* ================= DELETE SLOT ================= */
 router.delete("/:id/slots/:index", async (req, res) => {
   try {
     const turf = await Turf.findById(req.params.id);
     if (!turf) return res.status(404).json({ message: "Not found" });
 
     turf.slots.splice(req.params.index, 1);
+
     await turf.save();
 
     res.json(turf);
