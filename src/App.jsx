@@ -14,79 +14,93 @@ import AdminOrders from "./components/AdminOrders";
 import MyOrders from "./components/MyOrders";
 import Bookings from "./components/Bookings";
 import MyBookings from "./components/MyBookings";
+
+import CarbonFootprintDisplay from "./components/CarbonFootprintDisplay";
+
 export default function App() {
   return (
-    <Routes>
-      {/* PUBLIC */}
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
+    <>
+      <Routes>
+        {/* PUBLIC */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
 
-      {/* CUSTOMER */}
-      <Route
-        path="/restaurants"
-        element={
-          <ProtectedRoute allowedRoles={["customer"]}>
-            <Restaurants />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/restaurants/:id"
-        element={
-          <ProtectedRoute allowedRoles={["customer"]}>
-            <RestaurantDetail />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/book-turf"
-        element={
-          <ProtectedRoute allowedRoles={["customer"]}>
-            <TurfBooking />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/my-orders"
-        element={
-          <ProtectedRoute allowedRoles={["customer"]}>
-            <MyOrders />
-          </ProtectedRoute>
-        }
-      />
+        {/* CUSTOMER */}
+        <Route
+          path="/restaurants"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <Restaurants />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* ADMIN */}
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/turf-admin"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <TurfAdmin />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/orders"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AdminOrders />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/bookings" element={<Bookings />} />
-      <Route path="/my-bookings" element={<MyBookings />} />
+        <Route
+          path="/restaurants/:id"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <RestaurantDetail />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* REDIRECT */}
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route
+          path="/book-turf"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <TurfBooking />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-orders"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ADMIN */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/turf-admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <TurfAdmin />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/bookings" element={<Bookings />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+
+        {/* REDIRECT */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+
+      {/* 🌱 GLOBAL WIDGET */}
+      <CarbonFootprintDisplay />
+    </>
   );
 }
