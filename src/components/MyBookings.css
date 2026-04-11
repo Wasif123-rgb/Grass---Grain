@@ -6,16 +6,18 @@
 }
 
 .my-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-bottom: 20px;
+}
+
+.my-header h1 {
+  font-size: 26px;
+  color: #1f2d3d;
 }
 
 .my-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 18px;
-  margin-top: 20px;
 }
 
 .my-card {
@@ -23,6 +25,15 @@
   padding: 16px;
   border-radius: 14px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.my-card h3 {
+  margin: 0;
+}
+
+.my-card p {
+  font-size: 13px;
+  color: gray;
 }
 
 .slot {

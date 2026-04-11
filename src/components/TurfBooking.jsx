@@ -15,6 +15,8 @@ export default function TurfBooking() {
 
   const bookSlot = async (turfId, index) => {
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
     if (!token) return navigate("/login");
 
     const res = await fetch(
@@ -25,7 +27,10 @@ export default function TurfBooking() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ slotIndex: index }),
+        body: JSON.stringify({
+          slotIndex: index,
+          user: userId,
+        }),
       }
     );
 
@@ -39,29 +44,31 @@ export default function TurfBooking() {
     <div className="turf-page">
 
       {/* HEADER */}
-      
       <div className="turf-header">
-      <h1>🏟 Turf Booking</h1>
+        <div>
+          <h1>🏟 Turf Booking</h1>
+          <p className="subtitle">Book your favorite turf instantly</p>
+        </div>
 
-      <div className="header-actions">
-      <button
-        className="mini-btn"
-        onClick={() => navigate("/my-bookings")}
-      >
-      My Bookings
-      </button>
+        <div className="header-actions">
+          <button
+            className="mini-btn"
+            onClick={() => navigate("/my-bookings")}
+          >
+            My Bookings
+          </button>
 
-      <button
-        className="mini-btn logout"
-        onClick={() => {
-        localStorage.clear();
-        navigate("/login");
-      }}
-      >
-      Logout
-      </button>
+          <button
+            className="mini-btn logout"
+            onClick={() => {
+              localStorage.clear();
+              navigate("/login");
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
-    </div>
 
       {/* GRID */}
       <div className="turf-grid">
@@ -74,7 +81,7 @@ export default function TurfBooking() {
               <span className="turf-price">₹ {turf.price}</span>
             </div>
 
-            <p className="turf-location">{turf.location}</p>
+            <p className="turf-location">📍 {turf.location}</p>
 
             <div className="turf-slots">
 
@@ -82,7 +89,7 @@ export default function TurfBooking() {
                 <div key={i} className="turf-slot">
 
                   <span>
-                    {s.day} • {s.startTime}-{s.endTime}
+                    {s.day} • {s.startTime} - {s.endTime}
                   </span>
 
                   <button

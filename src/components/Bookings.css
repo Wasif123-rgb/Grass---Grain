@@ -1,4 +1,3 @@
-/* ROOT PAGE */
 .booking-page {
   min-height: 100vh;
   background: #f6f9fc;
@@ -7,66 +6,28 @@
 }
 
 /* HEADER */
-.booking-page .booking-header {
+.booking-header {
   position: relative;
   margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.booking-page .booking-header h1 {
-  font-size: 26px;
+.booking-header h1 {
+  font-size: 24px;
   color: #1f2d3d;
 }
 
-/* BUTTON GROUP (RIGHT SIDE) */
-.booking-page .header-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  gap: 6px;
-}
-
-/* SMALL BUTTON BASE */
-.booking-page .mini-btn {
-  height: 24px;
-  min-width: 60px;
-
-  padding: 0 6px;
-  font-size: 10px;
-
-  border: none;
-  border-radius: 6px;
-
-  background: #111;
-  color: white;
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: 0.2s ease;
-}
-
-/* LOGOUT BUTTON */
-.booking-page .mini-btn.logout {
-  background: #ef4444;
-}
-
-.booking-page .mini-btn:hover {
-  transform: scale(1.05);
-}
-
 /* GRID */
-.booking-page .booking-grid {
+.booking-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 18px;
 }
 
 /* CARD */
-.booking-page .booking-card {
+.booking-card {
   background: white;
   padding: 16px;
   border-radius: 14px;
@@ -74,22 +35,22 @@
   transition: 0.3s;
 }
 
-.booking-page .booking-card:hover {
+.booking-card:hover {
   transform: translateY(-5px);
 }
 
-.booking-page .booking-card h3 {
+.booking-card h3 {
   margin: 0;
   font-size: 18px;
 }
 
-.booking-page .booking-card p {
+.booking-card p {
   font-size: 13px;
   color: gray;
 }
 
 /* SLOT */
-.booking-page .slot {
+.slot {
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
@@ -97,8 +58,27 @@
 }
 
 /* BOOKED BY */
-.booking-page .booked-by {
+.booked-by {
   margin-top: 10px;
   font-size: 12px;
   color: green;
+}
+
+/* CANCEL BUTTON */
+.cancel-btn {
+  margin-top: 10px;
+  padding: 4px 8px;
+  font-size: 11px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: #ef4444;
+  color: white;
+
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: #dc2626;
 }

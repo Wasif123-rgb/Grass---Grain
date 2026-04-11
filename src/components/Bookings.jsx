@@ -13,31 +13,39 @@ export default function Bookings() {
       .catch(() => setBookings([]));
   }, []);
 
+  const cancelBooking = async (turfId, slotIndex) => {
+    const res = await fetch(
+      `http://localhost:5000/api/turfs/admin/cancel/${turfId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slotIndex }),
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok) return alert(data.message);
+
+    setBookings((prev) =>
+      prev.filter((b) => !(b.turfId === turfId && b.slotIndex === slotIndex))
+    );
+  };
+
   return (
     <div className="booking-page">
 
       {/* HEADER */}
       <div className="booking-header">
-  <h1>📋 Bookings Dashboard</h1>
+        <h1>📋 Bookings Dashboard</h1>
 
-  <div className="header-actions">
-    <button
-      className="mini-btn logout"
-      onClick={() => {
-        localStorage.clear();
-        navigate("/login");
-      }}
-    >
-      Logout
-    </button>
-  </div>
-</div>
+        
+      </div>
 
       {/* GRID */}
       <div className="booking-grid">
 
         {bookings.length === 0 ? (
-          <p>No bookings yet</p>
+          <p>No bookings found</p>
         ) : (
           bookings.map((b, i) => (
             <div key={i} className="booking-card">
@@ -53,6 +61,13 @@ export default function Bookings() {
               <div className="booked-by">
                 👤 {b.bookedBy}
               </div>
+
+              <button
+                className="cancel-btn"
+                onClick={() => cancelBooking(b.turfId, b.slotIndex)}
+              >
+                Cancel Booking
+              </button>
 
             </div>
           ))
